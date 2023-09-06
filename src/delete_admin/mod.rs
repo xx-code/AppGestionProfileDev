@@ -45,4 +45,11 @@ mod tests {
             assert!(admin.is_none());
         }
     }
+
+    #[test]
+    fn down() {
+        unsafe {
+            GLOBAL_DB.clean_admin()
+        }
+    }
 }

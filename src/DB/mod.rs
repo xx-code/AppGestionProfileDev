@@ -37,6 +37,12 @@ impl DB {
         let index = self.get_index_admin(admin_id).unwrap();
         self.admins.remove(index);
     }
+
+    pub fn clean_admin(&mut self) {
+        for index in 0..self.admins.len() {
+            self.admins.remove(index);
+        }
+    }
 }
 
 pub static mut GLOBAL_DB: DB = DB { admins: Vec::new() };
