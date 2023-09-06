@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use crate::admin::Admin;
 
 pub struct DB {
@@ -16,14 +15,27 @@ impl DB {
         self.admins.push(admin);
     }
 
-    pub fn get_admin(&self, admin_id: &String) -> Option<&Admin> {
-        let mut admin_get = None;
-        for admin in &self.admins {
+    fn get_index_admin(&self, admin_id: &String) -> Option<usize> {
+        let mut index_got = None;
+        for (index, admin) in self.admins.iter().enumerate() {
             if admin.get_id() == admin_id {
-                admin_get = Some(admin);
+                index_got = Some(index);
             }
         }
-        admin_get
+        index_got
+    }
+
+    pub fn get_admin(&self, admin_id: &String) -> Option<&Admin> {
+        let admin_index= self.get_index_admin(admin_id);
+        if admin_index.is_none() {
+            return None
+        }
+        return self.admins.get(admin_index.unwrap())
+    }
+
+    pub fn delete_admin(&mut self, admin_id: &String) {
+        let index = self.get_index_admin(admin_id).unwrap();
+        self.admins.remove(index);
     }
 }
 
