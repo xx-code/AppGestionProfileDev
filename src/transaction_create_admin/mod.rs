@@ -1,22 +1,22 @@
 use crate::admin::{Admin, self};
 use crate::transaction::Transaction;
 use crate::DB::GLOBAL_DB;
-pub struct CreateAdmin<'a> {
+pub struct TransactionCreateAdmin<'a> {
     admin_id: &'a String,
     username: &'a String,
     password: &'a String,
 }
 
-impl CreateAdmin<'_> {
-    pub fn new<'a>(admin_id: &'a String, username: &'a String, password: &'a String) -> CreateAdmin<'a> {
-        CreateAdmin { 
+impl TransactionCreateAdmin<'_> {
+    pub fn new<'a>(admin_id: &'a String, username: &'a String, password: &'a String) -> TransactionCreateAdmin<'a> {
+        TransactionCreateAdmin { 
             admin_id: admin_id, 
             username: username, 
             password: password 
         }
     }
 }
-impl Transaction for CreateAdmin<'_> {
+impl Transaction for TransactionCreateAdmin<'_> {
     fn execute<'a>(&'a self) -> () {
         let new_admin = Admin::new(
             self.admin_id,
@@ -32,7 +32,7 @@ impl Transaction for CreateAdmin<'_> {
 
 #[cfg(test)]
 mod tests {
-    use super::{CreateAdmin, };
+    use super::{TransactionCreateAdmin, };
     use crate::{DB::GLOBAL_DB, transaction::Transaction};
     
     #[test]
@@ -41,7 +41,7 @@ mod tests {
         let username = String::from("new_user");
         let password = String::from("password");
 
-        let new_admin = CreateAdmin::new(
+        let new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,
             &password

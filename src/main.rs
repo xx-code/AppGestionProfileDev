@@ -1,8 +1,8 @@
-mod create_admin;
+mod transaction_create_admin;
 mod DB;
 mod admin;
 mod transaction;
-mod delete_admin;
+mod transaction_delete_admin;
 fn main() {
     println!("Hello, world!");
 }
