@@ -27,12 +27,41 @@ impl Transaction for TransactionUpdateFirstnameProfile<'_> {
 #[cfg(test)]
 mod test {
     use crate::transaction::Transaction;
-    use crate::transaction_create_profile::tests::test_transaction_create_profile;
+    use crate::transaction_create_profile::TransactionCreateProfile;
+    use crate::transaction_create_admin::TransactionCreateAdmin;
     use crate::DB::GLOBAL_DB;
     use super::TransactionUpdateFirstnameProfile;
+    fn setup() {
+        let admin_id = String::from("admin_1");
+        let username = String::from("usern");
+        let password = String::from("password");
+
+        let profile_id = String::from("profile1");
+        let firstname = String::from("first");
+        let lastname = String::from("last");
+        let email_address = String::from("address");
+        let phone_number = String::from("07056389");
+
+        let ts = TransactionCreateAdmin::new(
+            &admin_id,
+            &username,
+            &password,
+        );
+        ts.execute();
+
+        let ts = TransactionCreateProfile::new(
+            &admin_id,
+            &profile_id,
+            &firstname,
+            &lastname,
+            &email_address,
+            &phone_number,
+        );
+        ts.execute();
+    }
     #[test]
     fn test_update_firstname_profile() {
-        test_transaction_create_profile();
+        setup();
         let profile_id = String::from("profile1");
         let new_firstname = String::from("new_firstname");
         let ts = TransactionUpdateFirstnameProfile::new(&profile_id, &new_firstname);
@@ -41,15 +70,7 @@ mod test {
         unsafe {
             let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
             assert_eq!(profile.get_firstname(), &new_firstname);
-        }
-
-        down();
-    }
-
-    fn down() {
-        unsafe {
-            GLOBAL_DB.clean_admin();
-            GLOBAL_DB.clean_profile();
+            GLOBAL_DB.clean();
         }
     }
 }

@@ -54,13 +54,8 @@ mod tests {
 
             assert_eq!(admin.get_username(), &username);
             assert_eq!(admin.get_password(), &password);
-        }
-    }
 
-    #[test]
-    fn down() {
-        unsafe {
-            GLOBAL_DB.clean_admin()
+            GLOBAL_DB.clean();
         }
     }
 }

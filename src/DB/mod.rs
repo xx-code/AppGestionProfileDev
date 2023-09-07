@@ -99,6 +99,11 @@ impl DB {
             self.profiles.remove(index);
         }
     }
+
+    pub fn clean(&mut self) {
+        self.clean_admin();
+        self.clean_profile();
+    }
 }
 
 pub static mut GLOBAL_DB: DB = DB { admins: Vec::new(), profiles: Vec::new() };

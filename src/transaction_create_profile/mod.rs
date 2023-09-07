@@ -86,15 +86,10 @@ pub mod tests {
             assert_eq!(profile.get_lastname(), &lastname);
             assert_eq!(profile.get_email_address(), &email_address);
             assert_eq!(profile.get_phone_number(), &phone_number);
+
+            GLOBAL_DB.clean();
         }
         
     }
 
-    #[test]
-    fn down() {
-        unsafe {
-            GLOBAL_DB.clean_admin();
-            GLOBAL_DB.clean_profile();
-        }
-    }
 }

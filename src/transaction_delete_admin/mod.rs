@@ -46,10 +46,4 @@ mod tests {
         }
     }
 
-    #[test]
-    fn down() {
-        unsafe {
-            GLOBAL_DB.clean_admin()
-        }
-    }
 }
