@@ -41,7 +41,7 @@ impl Transaction for TransactionCreateProfile<'_> {
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     use crate::{
         transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction,
@@ -50,7 +50,7 @@ mod tests {
     use super::TransactionCreateProfile;
 
     #[test]
-    fn transaction_create_profile() {
+    pub fn test_transaction_create_profile() {
         let admin_id = String::from("admin_1");
         let username = String::from("usern");
         let password = String::from("password");
@@ -87,6 +87,7 @@ mod tests {
             assert_eq!(profile.get_email_address(), &email_address);
             assert_eq!(profile.get_phone_number(), &phone_number);
         }
+        
     }
 
     #[test]
