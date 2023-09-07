@@ -55,12 +55,38 @@ impl DB {
         self.admins.remove(index);
     }
 
-    pub fn get_profile(&self, profile_id: &String) -> Option<&Profile> {
+    pub fn get_profile(&self, profile_id: &String) -> Option<& Profile> {
         let profile_index= self.get_index_profile(profile_id);
         if profile_index.is_none() {
             return None
         }
-        return self.profiles.get(profile_index.unwrap())
+        self.profiles.get(profile_index.unwrap())
+    }
+
+    pub fn update_profile(&mut self, profile_id: &String, update_info:(&str, &String)) {
+        let idx_profile = self.get_index_profile(profile_id);
+        if !idx_profile.is_none() {
+            let old_profile = self.profiles.get(idx_profile.unwrap()).unwrap().clone();
+            let mut new_profile = Profile::new(old_profile.get_admin_id(), old_profile.get_id(), old_profile.get_firstname(), old_profile.get_lastname(), old_profile.get_email_address(), old_profile.get_phone_number()); 
+            let (field, new_value) = update_info;
+            match field {
+                "firstname" => new_profile.set_firstname(new_value), 
+                "lastname" => new_profile.set_lastname(new_value),
+                "email_address" => new_profile.set_email_address(new_value), 
+                "phone_number" => new_profile.set_phone_number(new_value),
+                _ => todo!("return an error")
+            }
+            self.profiles.remove(idx_profile.unwrap());
+            for a in &self.profiles {
+               println!("d {}", a.get_firstname()); 
+            }
+            
+            unsafe {
+              self.add_new_profile(new_profile);   
+            };
+        } else {
+            println!("Add error no found profile")
+        }
     }
 
     pub fn clean_admin(&mut self) {

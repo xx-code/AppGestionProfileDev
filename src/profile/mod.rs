@@ -27,7 +27,23 @@ impl Profile {
             phone_number: phone_number.clone(),
         }
     }
+    
+    pub fn set_firstname(&mut self, firstname: &String) {
+        self.firstname = firstname.to_owned()
+    }
 
+    pub fn set_lastname(&mut self, lastname: &String) {
+        self.lastname = lastname.to_owned()
+    }
+
+    pub fn set_email_address(&mut self, email_address: &String) {
+        self.email_address = email_address.to_owned()
+    }
+
+    pub fn set_phone_number(&mut self, phone_number: &String) {
+        self.phone_number = phone_number.clone()
+    }
+    
     pub fn get_admin_id(&self,) -> &String {
         &self.admin_id
     }
