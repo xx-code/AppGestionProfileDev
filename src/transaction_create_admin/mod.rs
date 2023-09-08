@@ -17,7 +17,7 @@ impl TransactionCreateAdmin<'_> {
     }
 }
 impl Transaction for TransactionCreateAdmin<'_> {
-    fn execute<'a>(&'a self) -> () {
+    fn execute(& self) -> () {
         let new_admin = Admin::new(
             self.admin_id,
             self.username,

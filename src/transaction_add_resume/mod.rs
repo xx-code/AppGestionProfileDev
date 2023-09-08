@@ -27,6 +27,11 @@ impl TransactionAddResumeCurrent<'_> {
 }
 impl Transaction for TransactionAddResumeCurrent<'_> {
     fn execute(&self) -> () {
+        let mut do_let_add = false;
+        unsafe {
+            let admin = GLOBAL_DB.get_admin(self.admin_id);
+            do_let_add = !admin.is_none();
+        }
         let resume = Resume::new(
             self.resume_id,
             self.title,
@@ -37,13 +42,15 @@ impl Transaction for TransactionAddResumeCurrent<'_> {
         );
 
         unsafe {
-            GLOBAL_DB.add_resume(resume);
+            if do_let_add {
+                GLOBAL_DB.add_resume(resume);
+            }
         }
     }
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use crate::{
       transaction_create_admin::TransactionCreateAdmin,
       transaction::Transaction,
@@ -54,20 +61,20 @@ mod test {
     use time::Date;
     
     fn setup() {
-        let admin_id = String::from("admin1");
-        let username = String::from("new_user");
+        let admin_id = String::from("admin_1");
+        let username = String::from("usern");
         let password = String::from("password");
 
-        let new_admin = TransactionCreateAdmin::new(
-            &admin_id, 
+        let ts = TransactionCreateAdmin::new(
+            &admin_id,
             &username,
-            &password
+            &password,
         );
-
-        new_admin.execute();
+        ts.execute();
     }
     #[test]
     fn test_add_resume_current() {
+        setup();
         let admin_id = String::from("admin1");
         let resume_id = String::from("resume1");
         let title = String::from("title - element");
@@ -93,4 +100,29 @@ mod test {
             assert_eq!(resume.get_date_start(), &date_start);
         }
     }
+    /*#[test]
+    fn test_verify_if_is_admin_who_add_resume() {
+        
+        let admin_id = String::from("admin1");
+        let resume_id = String::from("resume1");
+        let title = String::from("title - element");
+        let description = String::from("description element");
+        let type_resume = ResumeType::Education;
+        let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
+
+        let ts = TransactionAddResumeCurrent::new(
+            &admin_id, 
+            &resume_id,
+            &title, 
+            &description, 
+            &type_resume, 
+            &date_start
+        );
+        ts.execute();
+
+        unsafe {
+            let resume = GLOBAL_DB.get_resume(&resume_id);
+            assert!(resume.is_none());
+        }
+    }*/
 }
