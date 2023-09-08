@@ -1,9 +1,16 @@
+use crate::entity::Entity;
 pub struct Admin {
     admin_id: String,
     username: String,
     password: String,
 }
 
+
+impl Entity for Admin {
+    fn get_id(&self,) -> &String {
+        &self.admin_id
+    }
+}
 impl Admin {
     pub fn new(admin_id: &String, username: &String, password: &String) -> Admin{
         Admin {
@@ -11,9 +18,6 @@ impl Admin {
             username: username.clone(),
             password: password.clone(),
         }
-    }
-    pub fn get_id(&self,) -> &String {
-        &self.admin_id
     }
 
     pub fn get_username(&self,) -> &String {
