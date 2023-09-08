@@ -1,10 +1,32 @@
+use crate::transaction::Transaction;
+use crate::DB::GLOBAL_DB;
+
+struct TransactionDeleteProfile<'a> {
+    profile_id: &'a String
+}
+
+impl TransactionDeleteProfile<'_> {
+    fn new<'a>(profile_id: &'a String) -> TransactionDeleteProfile {
+        TransactionDeleteProfile { profile_id }
+    }
+}
+
+impl Transaction for TransactionDeleteProfile<'_> {
+    fn execute(&self) -> () {
+        unsafe {
+            GLOBAL_DB.delete_profile(self.profile_id);
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::{
         transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction, 
         DB::GLOBAL_DB,
-       transaction_create_profile::TransactionCreateProfile,
+        transaction_create_profile::TransactionCreateProfile,
+        transaction_delete_profile::TransactionDeleteProfile
     };
 
     fn setup() {
@@ -46,6 +68,7 @@ mod test {
         unsafe {
             let profile = GLOBAL_DB.get_profile(&profile_id);
             assert!(profile.is_none());
+            GLOBAL_DB.clean();
         }
     }
 }

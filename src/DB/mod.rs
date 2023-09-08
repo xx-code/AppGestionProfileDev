@@ -55,6 +55,11 @@ impl DB {
         self.admins.remove(index);
     }
 
+    pub fn delete_profile(&mut self, profile_id: &String) {
+        let index = self.get_index_profile(profile_id).unwrap();
+        self.profiles.remove(index);
+    }
+
     pub fn get_profile(&self, profile_id: &String) -> Option<& Profile> {
         let profile_index= self.get_index_profile(profile_id);
         if profile_index.is_none() {
