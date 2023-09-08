@@ -45,7 +45,7 @@ pub mod tests {
     use crate::{
         transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction,
-        DB::GLOBAL_DB,
+        DB::GLOBAL_DB, entity::Entity,
     };
     use super::TransactionCreateProfile;
 

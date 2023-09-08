@@ -1,12 +1,4 @@
-/*pub struct ProfileData {
-    pub admin_id: String,
-    pub profile_id: String,
-    pub firstname: String,
-    pub lastname: String,
-    pub email_address: String,
-    pub phone_number: String
-}*/
-
+use crate::entity::Entity;
 pub struct Profile {
     admin_id: String,
     profile_id: String,
@@ -16,6 +8,11 @@ pub struct Profile {
     phone_number: String
 }
 
+impl Entity for Profile {
+    fn get_id(&self,) -> &String {
+        &self.profile_id
+    }
+}
 impl Profile {
     pub fn new(admin_id: &String, profile_id: &String, firstname: &String, lastname: &String, email_address: &String, phone_number: &String) -> Profile {
         Profile {
@@ -46,10 +43,6 @@ impl Profile {
     
     pub fn get_admin_id(&self,) -> &String {
         &self.admin_id
-    }
-
-    pub fn get_id(&self,) -> &String {
-        &self.profile_id
     }
 
     pub fn get_firstname(&self,) -> &String {
