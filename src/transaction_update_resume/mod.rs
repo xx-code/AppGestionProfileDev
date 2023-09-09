@@ -219,6 +219,9 @@ pub mod tests {
         );
         ts.execute();
 
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_eq!(resume.get_description(), &new_description);
     }
     #[test]
     fn test_update_resume_type_resume() {
@@ -236,6 +239,9 @@ pub mod tests {
         );
         ts.execute();
 
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_eq!(resume.get_type_resume(), &new_type_resume);
     }
     #[test]
     fn test_udpdate_resume_date_start() {
@@ -253,6 +259,9 @@ pub mod tests {
         );
         ts.execute();
 
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_eq!(resume.get_date_start(), &new_date_start);
     }
     #[test]
     fn test_update_resume_date_end() {
@@ -269,6 +278,13 @@ pub mod tests {
             &new_date_end, 
         );
         ts.execute();
+
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_eq!(&resume.get_date_end().unwrap(), &new_date_end);
+    }
+
+    fn test_not_accept_date_start_more_than_date_end() {
 
     }
 }
