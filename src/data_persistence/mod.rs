@@ -2,17 +2,19 @@ use crate::admin::Admin;
 use crate::profile::Profile;
 use crate::resume::Resume;
 use crate::entity::Entity;
+use crate::skill::Skill;
 
 #[derive(Debug, Clone)]
 pub struct DataPersistence {
     pub admins: Vec<Admin>,
     pub profiles: Vec<Profile>,
     pub resumes: Vec<Resume>,
+    pub skills: Vec<Skill>,
 }
 
 impl DataPersistence {
     pub fn new() -> DataPersistence {
-        DataPersistence { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new() }
+        DataPersistence { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new(), skills: Vec::new() }
     }
 }
 
