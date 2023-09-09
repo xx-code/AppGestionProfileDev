@@ -17,7 +17,7 @@ pub struct TransactionAddResumeCurrent<'a> {
     date_start: &'a Date,
 }
 impl TransactionAddResumeCurrent<'_> {
-    fn new<'a>(
+    pub fn new<'a>(
         db_resume: &'a mut ResumeTransactionPersistence<'a>, resume_id: &'a String, title: &'a String, description: &'a String, type_resume: &'a ResumeType, date_start: &'a Date) -> TransactionAddResumeCurrent<'a> {
         TransactionAddResumeCurrent { 
             db_resume,
@@ -54,7 +54,7 @@ pub struct TransactionAddResumeComplet<'a> {
     date_end: &'a Date,
 }
 impl TransactionAddResumeComplet<'_> {
-    fn new<'a>(
+    pub fn new<'a>(
         db_resume: &'a mut ResumeTransactionPersistence<'a>, resume_id: &'a String, title: &'a String, description: &'a String, type_resume: &'a ResumeType, date_start: &'a Date, date_end: &'a Date) -> TransactionAddResumeComplet<'a> {
         TransactionAddResumeComplet { 
             db_resume,
