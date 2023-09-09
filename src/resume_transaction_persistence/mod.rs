@@ -27,4 +27,11 @@ impl ResumeTransactionRepository for ResumeTransactionPersistence<'_> {
         }
         None
     }
+    fn delete_resume(&mut self, resume_id: &String) {
+        let index = self.get_index(&self.db.resumes, resume_id);
+
+        if !index.is_none() {
+            self.db.resumes.remove(index.unwrap());
+        }
+    }
 }
