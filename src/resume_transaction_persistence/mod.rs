@@ -2,7 +2,7 @@ use crate::{
     data_persistence::{ DataPersistence, Indexing}, 
     resume_transaction_repository::ResumeTransactionRepository,
     resume::Resume,
-    
+    entity::Entity,
 };
 
 pub struct ResumeTransactionPersistence<'a> {
@@ -26,6 +26,10 @@ impl ResumeTransactionRepository for ResumeTransactionPersistence<'_> {
            return Some(&self.db.resumes[index.unwrap()])
         }
         None
+    }
+    fn update_resume(&mut self, resume: Resume) {
+        let index = self.get_index(&self.db.resumes, resume.get_id()).unwrap();
+        self.db.resumes[index] = resume;
     }
     fn delete_resume(&mut self, resume_id: &String) {
         let index = self.get_index(&self.db.resumes, resume_id);
