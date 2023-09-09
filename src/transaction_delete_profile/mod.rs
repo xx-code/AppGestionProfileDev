@@ -45,7 +45,7 @@ mod test {
         let mut ts = TransactionDeleteProfile::new(&mut profile_data, &profile_id);
         ts.execute();
 
-        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
         let profile = profile_data.get_profile(&profile_id);
 
         assert!(profile.is_none());

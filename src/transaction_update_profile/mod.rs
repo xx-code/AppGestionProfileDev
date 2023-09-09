@@ -124,21 +124,6 @@ pub mod test {
         TransactionUpdateEmailAddressProfile,
         TransactionUpdatePhoneNumberProfile
     };
-    pub fn setup_admin(db: &mut DataPersistence) {
-        let admin_id = String::from("admin_1");
-        let username = String::from("usern");
-        let password = String::from("password");
-
-        let mut admin_data = AdminTransactionPersistence::build(db);
-        
-        let mut ts = TransactionCreateAdmin::new(
-            &mut admin_data,
-            &admin_id,
-            &username,
-            &password,
-        );
-        ts.execute();
-    }
 
     pub fn setup_profile(db: &mut DataPersistence) {
         let admin_id = String::from("admin_1");
@@ -163,7 +148,6 @@ pub mod test {
     #[test]
     fn test_update_firstname_profile() {
         let mut db = DataPersistence::new();
-        setup_admin(&mut db);
         setup_profile(&mut db);
 
         let mut profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -186,7 +170,6 @@ pub mod test {
     #[test]
     fn test_update_lastname_profile() {
         let mut db = DataPersistence::new();
-        setup_admin(&mut db);
         setup_profile(&mut db);
 
         let mut profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -209,7 +192,6 @@ pub mod test {
     #[test]
     fn test_update_email_address() {
         let mut db = DataPersistence::new();
-        setup_admin(&mut db);
         setup_profile(&mut db);
 
         let mut profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -233,7 +215,6 @@ pub mod test {
     #[test]
     fn test_phone_number() {
         let mut db = DataPersistence::new();
-        setup_admin(&mut db);
         setup_profile(&mut db);
 
         let mut profile_data = ProfileTransactionPersistence::build(&mut db);

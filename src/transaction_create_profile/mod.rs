@@ -48,7 +48,9 @@ pub mod tests {
         transaction::Transaction,
         entity::Entity,
         data_persistence::DataPersistence,
-        profile_transaction_persistence::ProfileTransactionPersistence, admin_transaction_persistence::AdminTransactionPersistence, profile_transaction_repository::ProfileTransactionRepository,
+        profile_transaction_persistence::ProfileTransactionPersistence, 
+        admin_transaction_persistence::AdminTransactionPersistence, 
+        profile_transaction_repository::ProfileTransactionRepository,
     };
     use super::TransactionCreateProfile;
 
@@ -97,5 +99,34 @@ pub mod tests {
         assert_eq!(profile.get_email_address(), &email_address);
         assert_eq!(profile.get_phone_number(), &phone_number);
     }
+    #[test]
+    fn test_if_admin_exist_before_create_admin() {
+        let admin_id = String::from("admin_3");
 
+        let profile_id = String::from("profile1");
+        let firstname = String::from("first");
+        let lastname = String::from("last");
+        let email_address = String::from("address");
+        let phone_number = String::from("07056389");
+
+        let mut db = DataPersistence::new();
+
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
+        let mut ts = TransactionCreateProfile::new(
+            &mut profile_data,
+            &admin_id,
+            &profile_id,
+            &firstname,
+            &lastname,
+            &email_address,
+            &phone_number,
+        );
+        ts.execute();
+
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id);
+
+        assert!(profile.is_none());
+    }
 }
