@@ -106,8 +106,17 @@ impl Transaction for TransactionUpdateResumeDateStart<'_> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
-            resume.set_date_start(self.date_start);
-            self.db.update_resume(resume);
+            if !resume.get_date_end().is_none() {
+                if self.date_start < &resume.get_date_end().unwrap() {
+                    resume.set_date_start(self.date_start);
+                    self.db.update_resume(resume)
+                } else {
+                    println!("add error  ")
+                }
+            } else {
+                resume.set_date_start(self.date_start);
+                self.db.update_resume(resume);
+            }
         } else {
             println!("ADD test gestion error no profile")
         }
@@ -284,7 +293,24 @@ pub mod tests {
         assert_eq!(&resume.get_date_end().unwrap(), &new_date_end);
     }
 
+    #[test]
     fn test_not_accept_date_start_more_than_date_end() {
+        let mut db = DataPersistence::new(); 
+        setup(&mut db);
 
+        let resume_id = String::from("resume1");
+        let new_date_start = Date::from_calendar_date(2023, time::Month::April, 1).unwrap();
+
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let mut ts = TransactionUpdateResumeDateStart::new(
+            &mut resume_data,
+            &resume_id,
+            &new_date_start, 
+        );
+        ts.execute();
+
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_ne!(resume.get_date_start(), &new_date_start);
     }
 }
