@@ -1,4 +1,5 @@
 use crate::entity::Entity;
+#[derive(Debug, Clone)]
 pub struct Profile {
     admin_id: String,
     profile_id: String,

@@ -1,3 +1,3 @@
 pub trait Transaction {
-    fn execute(&self) -> ();
+    fn execute(&mut self) -> ();
 }

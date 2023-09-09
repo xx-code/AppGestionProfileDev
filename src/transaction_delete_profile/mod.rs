@@ -1,74 +1,53 @@
-use crate::transaction::Transaction;
-use crate::DB::GLOBAL_DB;
+use crate::{
+    transaction::Transaction, 
+    profile_transaction_persistence::ProfileTransactionPersistence, 
+    profile_transaction_repository::ProfileTransactionRepository
+};
 
 struct TransactionDeleteProfile<'a> {
+    db: &'a mut ProfileTransactionPersistence<'a>,
     profile_id: &'a String
 }
 
 impl TransactionDeleteProfile<'_> {
-    fn new<'a>(profile_id: &'a String) -> TransactionDeleteProfile {
-        TransactionDeleteProfile { profile_id }
+    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String) -> TransactionDeleteProfile<'a> {
+        TransactionDeleteProfile { 
+            db, 
+            profile_id
+        }
     }
 }
 
 impl Transaction for TransactionDeleteProfile<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            GLOBAL_DB.delete_profile(self.profile_id);
-        }
+    fn execute(&mut self) -> () {
+        self.db.delete_profile(self.profile_id)
     }
 }
 
 #[cfg(test)]
 mod test {
     use crate::{
-        transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction, 
-        DB::GLOBAL_DB,
-        transaction_create_profile::TransactionCreateProfile,
-        transaction_delete_profile::TransactionDeleteProfile
+        transaction_delete_profile::TransactionDeleteProfile,
+        transaction_update_profile::test::setup_profile, 
+        data_persistence::DataPersistence, 
+        profile_transaction_persistence::ProfileTransactionPersistence,
+        profile_transaction_repository::ProfileTransactionRepository,
     };
-
-    fn setup() {
-        let admin_id = String::from("admin_1");
-        let username = String::from("usern");
-        let password = String::from("password");
-
-        let profile_id = String::from("profile1");
-        let firstname = String::from("first");
-        let lastname = String::from("last");
-        let email_address = String::from("address");
-        let phone_number = String::from("07056389");
-
-        let ts = TransactionCreateAdmin::new(
-            &admin_id,
-            &username,
-            &password,
-        );
-        ts.execute();
-
-        let ts = TransactionCreateProfile::new(
-            &admin_id,
-            &profile_id,
-            &firstname,
-            &lastname,
-            &email_address,
-            &phone_number,
-        );
-        ts.execute();
-    }
 
     #[test]
     fn test_delete_profile() {
-        setup();
+        let mut db = DataPersistence::new();
+        setup_profile(&mut db);
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
         let profile_id = String::from("profile1");
-        let ts = TransactionDeleteProfile::new(&profile_id);
+        let mut ts = TransactionDeleteProfile::new(&mut profile_data, &profile_id);
         ts.execute();
 
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id);
-            assert!(profile.is_none());
-            GLOBAL_DB.clean();
-        }
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id);
+
+        assert!(profile.is_none());
     }
 }

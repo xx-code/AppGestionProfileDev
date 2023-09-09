@@ -1,15 +1,34 @@
 use crate::admin::Admin;
-use crate::entity::Entity;
 use crate::profile::Profile;
 use crate::resume::Resume;
+use crate::entity::Entity;
 
-pub struct DB {
-    admins: Vec<Admin>,
-    profiles: Vec<Profile>,
-    resumes: Vec<Resume>,
+#[derive(Debug, Clone)]
+pub struct DataPersistence {
+    pub admins: Vec<Admin>,
+    pub profiles: Vec<Profile>,
+    pub resumes: Vec<Resume>,
 }
 
-impl DB {
+impl DataPersistence {
+    pub fn new() -> DataPersistence {
+        DataPersistence { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new() }
+    }
+}
+
+pub trait Indexing {
+    fn get_index<T: Entity>(&self, array: &Vec<T>, id: &String) -> Option<usize> {
+        let mut index_got = None;
+        for (index, element) in array.iter().enumerate() {
+            if element.get_id() == id {
+                index_got = Some(index);
+            }
+        }
+        index_got
+    }
+}
+
+/*impl DB {
     pub fn new() -> DB {
         DB {
             admins: Vec::new(),
@@ -115,6 +134,4 @@ impl DB {
         self.clean_admin();
         self.clean_profile();
     }
-}
-
-pub static mut GLOBAL_DB: DB = DB { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new() };
+}*/

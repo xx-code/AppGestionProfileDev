@@ -1,21 +1,24 @@
+use crate::admin_transaction_persistence::AdminTransactionPersistence;
+use crate::admin_transaction_repository::AdminTransactionRepository;
 use crate::transaction::Transaction;
-use crate::DB::GLOBAL_DB;
 
 pub struct TransactionDeleteAdmin<'a> {
+    db: &'a mut AdminTransactionPersistence<'a>, 
     admin_id: &'a String
 }
 
 impl TransactionDeleteAdmin<'_>{
-    pub fn new(admin_id: &String) -> TransactionDeleteAdmin {
-        TransactionDeleteAdmin { admin_id }
+    pub fn new<'a> (db: &'a mut AdminTransactionPersistence<'a>, admin_id: &'a String) -> TransactionDeleteAdmin<'a> {
+        TransactionDeleteAdmin { 
+            db, 
+            admin_id 
+        }
     } 
 }
 
 impl Transaction for TransactionDeleteAdmin<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            GLOBAL_DB.delete_admin(self.admin_id)
-        }
+    fn execute(&mut self) -> () {
+        self.db.delete_admin(self.admin_id);
     }
 }
 
@@ -24,8 +27,9 @@ mod tests {
     use crate::{
         transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction, 
-        DB::GLOBAL_DB,
+        data_persistence::DataPersistence,
         transaction_delete_admin::TransactionDeleteAdmin,
+        admin_transaction_persistence::AdminTransactionPersistence, admin_transaction_repository::AdminTransactionRepository,
     };
 
     #[test]
@@ -34,16 +38,24 @@ mod tests {
         let username = String::from("username");
         let password = String::from("password");
 
-        let ts = TransactionCreateAdmin::new(&admin_id, &username, &password);
+        let mut db = DataPersistence::new();
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+
+        let mut ts = TransactionCreateAdmin::new(
+            &mut admin_data,
+            &admin_id, 
+            &username, 
+            &password
+        );
         ts.execute();
 
-        let ts = TransactionDeleteAdmin::new(&admin_id);
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let mut ts = TransactionDeleteAdmin::new(&mut admin_data, &admin_id);
         ts.execute();
         
-        unsafe {
-            let admin = GLOBAL_DB.get_admin(&admin_id);
-            assert!(admin.is_none());
-        }
+        let admin_data = AdminTransactionPersistence::build(&mut db);
+        let admin = admin_data.get_admin(&admin_id);
+        assert!(admin.is_none());
     }
 
 }

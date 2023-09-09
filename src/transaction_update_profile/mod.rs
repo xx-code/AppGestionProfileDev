@@ -1,121 +1,156 @@
+use crate::profile_transaction_persistence::ProfileTransactionPersistence;
+use crate::profile_transaction_repository::ProfileTransactionRepository;
 use crate::transaction::Transaction;
-use crate::DB::GLOBAL_DB;
 
 pub struct TransactionUpdateFirstnameProfile<'a> {
+    db: &'a mut ProfileTransactionPersistence<'a>,
     profile_id: &'a String,
     firstname: &'a String,
 }
 impl TransactionUpdateFirstnameProfile<'_> {
-    fn new<'a>(profile_id: &'a String, firstname: &'a String) -> TransactionUpdateFirstnameProfile<'a> {
-        TransactionUpdateFirstnameProfile { 
+    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String, firstname: &'a String) -> TransactionUpdateFirstnameProfile<'a> {
+        TransactionUpdateFirstnameProfile {
+            db,
             profile_id, 
             firstname 
         }
     }
 }
 impl Transaction for TransactionUpdateFirstnameProfile<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            let udpate_info = ("firstname", self.firstname);
-            GLOBAL_DB.update_profile(self.profile_id, udpate_info);
+    fn execute(&mut self) -> () {
+        let profile =  self.db.get_profile(self.profile_id);
+        if !profile.is_none() {
+            let mut profile = profile.unwrap().clone();
+            profile.set_firstname(self.firstname);
+            self.db.update_profile(profile);
+        } else {
+            println!("ADD test gestion error no profile")
         }
     }
 }
 
 pub struct TransactionUpdateLastnameProfile<'a> {
+    db: &'a mut  ProfileTransactionPersistence<'a>,
     profile_id: &'a String,
     lastname: &'a String,
 }
 impl TransactionUpdateLastnameProfile<'_> {
-    fn new<'a>(profile_id: &'a String, lastname: &'a String) -> TransactionUpdateLastnameProfile<'a> {
-        TransactionUpdateLastnameProfile { 
+    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String, lastname: &'a String) -> TransactionUpdateLastnameProfile<'a> {
+        TransactionUpdateLastnameProfile {
+            db,
             profile_id, 
             lastname
         }
     }
 }
 impl Transaction for TransactionUpdateLastnameProfile<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            let udpate_info = ("lastname", self.lastname);
-            GLOBAL_DB.update_profile(self.profile_id, udpate_info);
+    fn execute(&mut self) -> () {
+        let  profile =  self.db.get_profile(self.profile_id);
+        if !profile.is_none() {
+            let mut profile = profile.unwrap().clone();
+            profile.set_lastname(self.lastname);
+            self.db.update_profile(profile);
+        } else {
+            println!("ADD test gestion error no profile")
         }
     }
 }
 
 pub struct TransactionUpdateEmailAddressProfile<'a> {
+    db: &'a mut ProfileTransactionPersistence<'a>,
     profile_id: &'a String,
     email_address: &'a String,
 }
 impl TransactionUpdateEmailAddressProfile<'_> {
-    fn new<'a>(profile_id: &'a String, email_address: &'a String) -> TransactionUpdateEmailAddressProfile<'a> {
+    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String, email_address: &'a String) -> TransactionUpdateEmailAddressProfile<'a> {
         TransactionUpdateEmailAddressProfile { 
+            db,
             profile_id, 
             email_address
         }
     }
 }
 impl Transaction for TransactionUpdateEmailAddressProfile<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            let udpate_info = ("email_address", self.email_address);
-            GLOBAL_DB.update_profile(self.profile_id, udpate_info);
+    fn execute(&mut self) -> () {
+        let  profile =  self.db.get_profile(self.profile_id);
+        if !profile.is_none() {
+            let mut profile = profile.unwrap().clone();
+            profile.set_email_address(self.email_address);
+            self.db.update_profile(profile);
+        } else {
+            println!("ADD test gestion error no profile")
         }
     }
 }
 
 pub struct TransactionUpdatePhoneNumberProfile<'a> {
+    db: &'a mut ProfileTransactionPersistence<'a>,
     profile_id: &'a String,
     phone_number: &'a String,
 }
 impl TransactionUpdatePhoneNumberProfile<'_> {
-    fn new<'a>(profile_id: &'a String, phone_number: &'a String) -> TransactionUpdatePhoneNumberProfile<'a> {
-        TransactionUpdatePhoneNumberProfile { 
+    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String, phone_number: &'a String) -> TransactionUpdatePhoneNumberProfile<'a> {
+        TransactionUpdatePhoneNumberProfile {
+            db,
             profile_id,
             phone_number
         }
     }
 }
 impl Transaction for TransactionUpdatePhoneNumberProfile<'_>{
-    fn execute(&self) -> () {
-        unsafe {
-            let udpate_info = ("phone_number", self.phone_number);
-            GLOBAL_DB.update_profile(self.profile_id, udpate_info);
+    fn execute(&mut self) -> () {
+        let  profile =  self.db.get_profile(self.profile_id);
+        if !profile.is_none() {
+            let mut profile = profile.unwrap().clone();
+            profile.set_phone_number(self.phone_number);
+            self.db.update_profile(profile);
+        } else {
+            println!("ADD test gestion error no profile")
         }
     }   
 }
 
 #[cfg(test)]
-mod test {
-    use crate::transaction::Transaction;
+pub mod test {
+    use crate::data_persistence::DataPersistence;
+    use crate::profile_transaction_persistence::ProfileTransactionPersistence;
+    use crate::profile_transaction_repository::ProfileTransactionRepository;
+    use crate::{transaction::Transaction, admin_transaction_persistence::AdminTransactionPersistence};
     use crate::transaction_create_profile::TransactionCreateProfile;
     use crate::transaction_create_admin::TransactionCreateAdmin;
-    use crate::DB::GLOBAL_DB;
     use super::{
         TransactionUpdateFirstnameProfile,
         TransactionUpdateLastnameProfile,
         TransactionUpdateEmailAddressProfile,
         TransactionUpdatePhoneNumberProfile
     };
-    fn setup() {
+    pub fn setup_admin(db: &mut DataPersistence) {
         let admin_id = String::from("admin_1");
         let username = String::from("usern");
         let password = String::from("password");
 
+        let mut admin_data = AdminTransactionPersistence::build(db);
+        
+        let mut ts = TransactionCreateAdmin::new(
+            &mut admin_data,
+            &admin_id,
+            &username,
+            &password,
+        );
+        ts.execute();
+    }
+
+    pub fn setup_profile(db: &mut DataPersistence) {
+        let admin_id = String::from("admin_1");
         let profile_id = String::from("profile1");
         let firstname = String::from("first");
         let lastname = String::from("last");
         let email_address = String::from("address");
         let phone_number = String::from("07056389");
 
-        let ts = TransactionCreateAdmin::new(
-            &admin_id,
-            &username,
-            &password,
-        );
-        ts.execute();
-
-        let ts = TransactionCreateProfile::new(
+        let mut profile_data = ProfileTransactionPersistence::build(db);
+        let mut ts = TransactionCreateProfile::new(
+            &mut profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -127,62 +162,95 @@ mod test {
     }
     #[test]
     fn test_update_firstname_profile() {
-        setup();
+        let mut db = DataPersistence::new();
+        setup_admin(&mut db);
+        setup_profile(&mut db);
+
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
         let profile_id = String::from("profile1");
         let new_firstname = String::from("new_firstname");
-        let ts = TransactionUpdateFirstnameProfile::new(&profile_id, &new_firstname);
+        let mut ts = TransactionUpdateFirstnameProfile::new(
+            &mut profile_data,
+            &profile_id, 
+            &new_firstname
+        );
         ts.execute();
 
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
-            assert_eq!(profile.get_firstname(), &new_firstname);
-            GLOBAL_DB.clean();
-        }
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id).unwrap();
+
+        assert_eq!(profile.get_firstname(), &new_firstname);
     }
 
     #[test]
     fn test_update_lastname_profile() {
-        setup();
+        let mut db = DataPersistence::new();
+        setup_admin(&mut db);
+        setup_profile(&mut db);
+
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
         let profile_id = String::from("profile1");
         let new_lastname = String::from("new_lastname");
-        let ts = TransactionUpdateLastnameProfile::new(&profile_id, &new_lastname);
+        let mut ts = TransactionUpdateLastnameProfile::new(
+            &mut profile_data,
+            &profile_id, 
+            &new_lastname
+        );
         ts.execute();
 
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
-            assert_eq!(profile.get_lastname(), &new_lastname);
-            GLOBAL_DB.clean();
-        }
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id).unwrap();
+
+        assert_eq!(profile.get_lastname(), &new_lastname);
     }
 
     #[test]
     fn test_update_email_address() {
-        setup();
+        let mut db = DataPersistence::new();
+        setup_admin(&mut db);
+        setup_profile(&mut db);
+
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
         let profile_id = String::from("profile1");
         let new_email = String::from("New email");
-        let ts = TransactionUpdateEmailAddressProfile::new(&profile_id, &new_email);
+        let mut ts = TransactionUpdateEmailAddressProfile::new(
+            &mut profile_data, 
+            &profile_id, 
+            &new_email
+        );
         ts.execute();
 
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
-            assert_eq!(profile.get_email_address(), &new_email);
-            GLOBAL_DB.clean();
-        }
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id).unwrap();
+
+        assert_eq!(profile.get_email_address(), &new_email);
+        
     }
 
     #[test]
     fn test_phone_number() {
-        setup();
+        let mut db = DataPersistence::new();
+        setup_admin(&mut db);
+        setup_profile(&mut db);
+
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
         let profile_id = String::from("profile1");
         let new_phone: String = String::from("482982569");
-        let ts = TransactionUpdatePhoneNumberProfile::new(&profile_id, &new_phone);
+        let mut ts = TransactionUpdatePhoneNumberProfile::new(
+            &mut profile_data, 
+            &profile_id, 
+            &new_phone
+        );
         ts.execute();
-
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
-            assert_eq!(profile.get_phone_number(), &new_phone);
-            GLOBAL_DB.clean();
-        }
+       
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id).unwrap();
+        
+        assert_eq!(profile.get_phone_number(), &new_phone);
     }
 
 }

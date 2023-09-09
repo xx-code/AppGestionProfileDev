@@ -1,7 +1,9 @@
+use crate::profile_transaction_persistence::ProfileTransactionPersistence;
+use crate::profile_transaction_repository::ProfileTransactionRepository;
 use crate::transaction::Transaction;
-use crate::DB::GLOBAL_DB;
 use crate::profile::Profile;
 pub struct TransactionCreateProfile<'a> {
+    db: &'a mut ProfileTransactionPersistence<'a>,
     admin_id: &'a String,
     profile_id: &'a String,
     firstname: &'a String,
@@ -11,8 +13,9 @@ pub struct TransactionCreateProfile<'a> {
 }
 
 impl TransactionCreateProfile<'_> {
-    pub fn new<'a>(admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
+    pub fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
         TransactionCreateProfile {
+            db,
             admin_id,
             profile_id, 
             firstname, 
@@ -24,19 +27,17 @@ impl TransactionCreateProfile<'_> {
 }
 
 impl Transaction for TransactionCreateProfile<'_> {
-    fn execute(&self) -> () {
-        unsafe {
-            let profile = Profile::new(
-                self.admin_id,
-                self.profile_id,
-                self.firstname,
-                self.lastname,
-                self.email_address,
-                self.phone_number,
-            );
+    fn execute(&mut self) -> () {
+       let profile = Profile::new(
+            self.admin_id,
+            self.profile_id,
+            self.firstname,
+            self.lastname,
+            self.email_address,
+            self.phone_number,
+        );
 
-            GLOBAL_DB.add_new_profile(profile);
-        }
+        self.db.create_profile(profile);
     }
 }
 
@@ -45,7 +46,9 @@ pub mod tests {
     use crate::{
         transaction_create_admin::TransactionCreateAdmin, 
         transaction::Transaction,
-        DB::GLOBAL_DB, entity::Entity,
+        entity::Entity,
+        data_persistence::DataPersistence,
+        profile_transaction_persistence::ProfileTransactionPersistence, admin_transaction_persistence::AdminTransactionPersistence, profile_transaction_repository::ProfileTransactionRepository,
     };
     use super::TransactionCreateProfile;
 
@@ -61,14 +64,21 @@ pub mod tests {
         let email_address = String::from("address");
         let phone_number = String::from("07056389");
 
-        let ts = TransactionCreateAdmin::new(
+        let mut db = DataPersistence::new();
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+
+        let mut ts = TransactionCreateAdmin::new(
+            &mut admin_data,
             &admin_id,
             &username,
             &password,
         );
         ts.execute();
 
-        let ts = TransactionCreateProfile::new(
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+
+        let mut ts = TransactionCreateProfile::new(
+            &mut profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -78,18 +88,14 @@ pub mod tests {
         );
         ts.execute();
 
-        unsafe {
-            let profile = GLOBAL_DB.get_profile(&profile_id).unwrap();
+        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile = profile_data.get_profile(&profile_id).unwrap();
 
-            assert_eq!(profile.get_id(), &profile_id);
-            assert_eq!(profile.get_firstname(), &firstname);
-            assert_eq!(profile.get_lastname(), &lastname);
-            assert_eq!(profile.get_email_address(), &email_address);
-            assert_eq!(profile.get_phone_number(), &phone_number);
-
-            GLOBAL_DB.clean();
-        }
-        
+        assert_eq!(profile.get_id(), &profile_id);
+        assert_eq!(profile.get_firstname(), &firstname);
+        assert_eq!(profile.get_lastname(), &lastname);
+        assert_eq!(profile.get_email_address(), &email_address);
+        assert_eq!(profile.get_phone_number(), &phone_number);
     }
 
 }

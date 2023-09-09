@@ -6,6 +6,7 @@ pub enum ResumeType {
     Education,
     Job
 }
+#[derive(Debug, Clone)]
 pub struct Resume {
     resume_id: String,
     title: String,
