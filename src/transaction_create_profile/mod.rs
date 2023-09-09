@@ -28,16 +28,19 @@ impl TransactionCreateProfile<'_> {
 
 impl Transaction for TransactionCreateProfile<'_> {
     fn execute(&mut self) -> () {
-       let profile = Profile::new(
-            self.admin_id,
-            self.profile_id,
-            self.firstname,
-            self.lastname,
-            self.email_address,
-            self.phone_number,
-        );
-
-        self.db.create_profile(profile);
+        
+        if self.db.is_admin_exist(self.admin_id) {
+            let profile = Profile::new(
+                self.admin_id,
+                self.profile_id,
+                self.firstname,
+                self.lastname,
+                self.email_address,
+                self.phone_number,
+            );
+    
+            self.db.create_profile(profile);
+        }
     }
 }
 

@@ -16,6 +16,13 @@ impl ProfileTransactionRepository for ProfileTransactionPersistence<'_> {
     fn create_profile(&mut self, profile: Profile) {
         self.db.profiles.push(profile)
     }
+    fn is_admin_exist(&self, admin_id: &String) -> bool {
+        let index = self.get_index(&self.db.admins, admin_id);
+        if index.is_none() {
+            return false;
+        }
+        return true;
+    }
     fn get_profile(&self, profile_id: &String) -> Option<&Profile> {
         let index = self.get_index(&self.db.profiles, profile_id);
         
