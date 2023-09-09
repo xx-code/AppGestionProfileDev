@@ -1,8 +1,26 @@
-use crate::skill_transaction_persistence::SkillTransactionPersistence;
+use crate::{skill_transaction_persistence::{
+    SkillTransactionPersistence,
+}, 
+transaction::Transaction, 
+skill_transaction_repository::SkillTransactionRepository};
 
 pub struct TransactionDeleteSkill<'a> {
     db: &'a mut SkillTransactionPersistence<'a>,
-    skill: &'a String,
+    skill_id: &'a String,
+}
+
+impl TransactionDeleteSkill<'_> {
+    pub fn new<'a>(db: &'a mut SkillTransactionPersistence<'a>, skill_id: &'a String) -> TransactionDeleteSkill<'a> {
+        TransactionDeleteSkill { 
+            db, 
+            skill_id
+        }
+    }
+}
+impl Transaction for TransactionDeleteSkill<'_> {
+    fn execute(&mut self) -> () {
+        self.db.delete_skill(self.skill_id);
+    }
 }
 
 #[cfg(test)]
@@ -11,8 +29,11 @@ mod tests {
         transaction_add_skill::TransactionAddSkill,
         skill_transaction_persistence::SkillTransactionPersistence,
         data_persistence::DataPersistence,
+        skill_transaction_repository::SkillTransactionRepository,
         transaction::Transaction,
     };
+
+    use super::TransactionDeleteSkill;
 
     #[test]
     fn test_delete_skill() {

@@ -30,4 +30,12 @@ impl SkillTransactionRepository for SkillTransactionPersistence<'_> {
         }
         None
     }
+    fn delete_skill(&mut self, skill_id: &String) {
+        let index = self.get_index( &self.db.skills, skill_id);
+
+        if !index.is_none() { 
+            self.db.skills.remove(index.unwrap());
+        }
+        
+    }
 }
