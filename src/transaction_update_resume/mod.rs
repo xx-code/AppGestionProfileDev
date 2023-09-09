@@ -313,4 +313,24 @@ pub mod tests {
         let resume = resume_data.get_resume(&resume_id).unwrap();
         assert_ne!(resume.get_date_start(), &new_date_start);
     }
+    #[test]
+    fn test_not_accept_date_end_less_than_date_start() {
+        let mut db = DataPersistence::new(); 
+        setup(&mut db);
+
+        let resume_id = String::from("resume1");
+        let new_date_end = Date::from_calendar_date(2019, time::Month::April, 1).unwrap();
+
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let mut ts = TransactionUpdateResumeDateEnd::new(
+            &mut resume_data,
+            &resume_id,
+            &new_date_end, 
+        );
+        ts.execute();
+
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let resume = resume_data.get_resume(&resume_id).unwrap();
+        assert_ne!(&resume.get_date_end().unwrap(), &new_date_end);
+    }
 }
