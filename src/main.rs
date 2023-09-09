@@ -18,6 +18,7 @@ mod resume_transaction_persistence;
 mod resume_transaction_repository;
 mod transaction_delete_resume;
 mod transaction_update_resume;
+mod transaction_add_skill;
 fn main() {
     println!("Hello, world!");
 }
