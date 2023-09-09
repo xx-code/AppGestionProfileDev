@@ -142,8 +142,12 @@ impl Transaction for TransactionUpdateResumeDateEnd<'_> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
-            resume.set_date_end(Some(self.date_end));
-            self.db.update_resume(resume);
+            if self.date_end > &resume.get_date_start() {
+                resume.set_date_end(Some(self.date_end));
+                self.db.update_resume(resume);
+            } else {
+                println!("add error  ")
+            }
         } else {
             println!("ADD test gestion error no profile")
         }
