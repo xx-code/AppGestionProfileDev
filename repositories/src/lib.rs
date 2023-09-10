@@ -2,3 +2,4 @@ pub mod admin_transaction_repository;
 pub mod profile_transaction_repository;
 pub mod resume_transaction_repository;
 pub mod skill_transaction_repository;
+pub mod project_transaction_repository;

@@ -3,6 +3,7 @@ use entities::{
     profile::Profile,
     resume::Resume,
     skill::Skill,
+    project::Project,
     entity::Entity,
 };
 /*use crate::profile::Profile;
@@ -16,11 +17,12 @@ pub struct DataPersistence {
     pub profiles: Vec<Profile>,
     pub resumes: Vec<Resume>,
     pub skills: Vec<Skill>,
+    pub projects: Vec<Project>
 }
 
 impl DataPersistence {
     pub fn new() -> DataPersistence {
-        DataPersistence { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new(), skills: Vec::new() }
+        DataPersistence { admins: Vec::new(), profiles: Vec::new(), resumes: Vec::new(), skills: Vec::new(), projects: Vec::new() }
     }
 }
 
