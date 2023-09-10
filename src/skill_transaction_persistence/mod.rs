@@ -1,7 +1,7 @@
 use crate::{
     data_persistence::{DataPersistence, Indexing}, 
     skill_transaction_repository::SkillTransactionRepository,
-    skill::Skill,
+    skill::Skill, entity::Entity,
 };
 
 pub struct SkillTransactionPersistence<'a> {
@@ -37,5 +37,9 @@ impl SkillTransactionRepository for SkillTransactionPersistence<'_> {
             self.db.skills.remove(index.unwrap());
         }
         
+    }
+    fn update_skill(&mut self, skill: Skill) {
+        let index = self.get_index(&self.db.skills, skill.get_id()).unwrap();
+        self.db.skills[index] = skill;
     }
 }
