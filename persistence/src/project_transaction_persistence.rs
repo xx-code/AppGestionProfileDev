@@ -29,4 +29,8 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
         let index = self.get_index(&self.db.projects, project.get_id()).unwrap();
         self.db.projects[index] = project;
     }
+    fn delete_project(&mut self, project_id: &String) {
+        let index = self.get_index(&self.db.projects, project_id).unwrap();
+        self.db.projects.remove(index);
+    }
 }

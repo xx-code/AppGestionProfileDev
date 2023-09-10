@@ -117,7 +117,7 @@ mod test {
         setup(&mut db);
 
         let project_id = String::from("project1");
-        let date_end = Date::from_calendar_date(2022, time::Month::February, 3).unwrap();;
+        let date_end = Date::from_calendar_date(2022, time::Month::February, 3).unwrap();
         
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
