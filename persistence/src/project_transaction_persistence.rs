@@ -1,4 +1,4 @@
-use entities::project::Project;
+use entities::{entity::Entity, project::Project};
 use repositories::project_transaction_repository::ProjectTransactionRepository;
 use crate::data_persistence::{DataPersistence, Indexing};
 
@@ -24,5 +24,9 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
             return Some(&self.db.projects[index.unwrap()])
         }
         None
+    }
+    fn update_project(&mut self, project: Project) {
+        let index = self.get_index(&self.db.projects, project.get_id()).unwrap();
+        self.db.projects[index] = project;
     }
 }
