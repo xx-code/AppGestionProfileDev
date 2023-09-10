@@ -3,17 +3,46 @@
 version = 3
 
 [[package]]
-name = "GestionProfileDev"
+name = "deranged"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2696e8a945f658fd14dc3b87242e6b80cd0f36ff04ea560fa39082368847946"
+
+[[package]]
+name = "domain_test"
+version = "0.1.0"
+dependencies = [
+ "domains",
+ "entities",
+ "persistence",
+ "repositories",
+ "time",
+]
+
+[[package]]
+name = "domains"
+version = "0.1.0"
+dependencies = [
+ "entities",
+ "repositories",
+ "time",
+]
+
+[[package]]
+name = "entities"
 version = "0.1.0"
 dependencies = [
  "time",
 ]
 
 [[package]]
-name = "deranged"
-version = "0.3.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2696e8a945f658fd14dc3b87242e6b80cd0f36ff04ea560fa39082368847946"
+name = "persistence"
+version = "0.1.0"
+dependencies = [
+ "entities",
+ "repositories",
+ "time",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -31,6 +60,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5267fca4496028628a95160fc423a33e8b2e6af8a5302579e322e4b520293cae"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "repositories"
+version = "0.1.0"
+dependencies = [
+ "entities",
+ "time",
 ]
 
 [[package]]
