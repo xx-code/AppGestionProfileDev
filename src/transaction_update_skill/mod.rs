@@ -30,6 +30,61 @@ impl Transaction for TransactionUpdateTitleSkill<'_> {
     }
 }
 
+struct TransactionUpdateIsCurrentSkill<'a> {
+    db: Box<dyn SkillTransactionRepository + 'a>,
+    skill_id: &'a String,
+    is_current: bool
+}
+impl TransactionUpdateIsCurrentSkill<'_> {
+    fn new<'a>(db: Box<dyn SkillTransactionRepository + 'a>, skill_id: &'a String, is_current: bool) -> TransactionUpdateIsCurrentSkill<'a> {
+        TransactionUpdateIsCurrentSkill { 
+            db, 
+            skill_id, 
+            is_current
+        }
+    }
+}
+impl Transaction for TransactionUpdateIsCurrentSkill<'_> {
+    fn execute(&mut self) -> () {
+        let skill =  self.db.get_skill(self.skill_id);
+        if !skill.is_none() {
+            let mut skill = skill.unwrap().clone();
+            skill.set_is_current(self.is_current);
+            self.db.update_skill(skill);
+        } else {
+            println!("ADD test gestion error no skill")
+        }
+    }
+}
+
+struct TransactionUpdateLogoSkill<'a> {
+    db: Box<dyn SkillTransactionRepository + 'a>,
+    skill_id: &'a String,
+    logo: &'a String
+}
+impl TransactionUpdateLogoSkill<'_> {
+    fn new<'a>(db: Box<dyn SkillTransactionRepository + 'a>, skill_id: &'a String, logo: &'a String) -> TransactionUpdateLogoSkill<'a> {
+        TransactionUpdateLogoSkill { 
+            db, 
+            skill_id, 
+            logo
+        }
+    }
+}
+impl Transaction for TransactionUpdateLogoSkill<'_> {
+    fn execute(&mut self) -> () {
+        let skill =  self.db.get_skill(self.skill_id);
+        if !skill.is_none() {
+            let mut skill = skill.unwrap().clone();
+            skill.set_logo(self.logo);
+            self.db.update_skill(skill);
+        } else {
+            println!("ADD test gestion error no skill")
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use crate::{
@@ -122,7 +177,7 @@ mod tests {
         let mut ts = TransactionUpdateIsCurrentSkill::new(
             skill_data,
             &skill_id, 
-            &is_current,
+            is_current,
         );
         ts.execute();
         drop(ts);
