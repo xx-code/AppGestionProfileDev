@@ -39,15 +39,16 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let mut admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionCreateAdmin::new(
-            &mut admin_data,
+            admin_data,
             &admin_id, 
             &username, 
             &password
         );
         ts.execute();
+        drop(ts);
 
         let mut admin_data = AdminTransactionPersistence::build(&mut db);
         let mut ts = TransactionDeleteAdmin::new(&mut admin_data, &admin_id);

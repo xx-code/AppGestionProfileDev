@@ -3,7 +3,7 @@ use crate::profile_transaction_repository::ProfileTransactionRepository;
 use crate::transaction::Transaction;
 use crate::profile::Profile;
 pub struct TransactionCreateProfile<'a> {
-    db: &'a mut ProfileTransactionPersistence<'a>,
+    db: Box<dyn ProfileTransactionRepository + 'a>,
     admin_id: &'a String,
     profile_id: &'a String,
     firstname: &'a String,
@@ -13,7 +13,7 @@ pub struct TransactionCreateProfile<'a> {
 }
 
 impl TransactionCreateProfile<'_> {
-    pub fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
+    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
         TransactionCreateProfile {
             db,
             admin_id,
@@ -70,20 +70,21 @@ pub mod tests {
         let phone_number = String::from("07056389");
 
         let mut db = DataPersistence::new();
-        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let mut admin_data = Box::new(AdminTransactionPersistence::build(&mut db) );
 
         let mut ts = TransactionCreateAdmin::new(
-            &mut admin_data,
+            admin_data,
             &admin_id,
             &username,
             &password,
         );
         ts.execute();
+        drop(ts);
 
-        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+        let mut profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionCreateProfile::new(
-            &mut profile_data,
+            profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -92,8 +93,10 @@ pub mod tests {
             &phone_number,
         );
         ts.execute();
+        drop(ts);
+        
 
-        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
         let profile = profile_data.get_profile(&profile_id).unwrap();
 
         assert_eq!(profile.get_id(), &profile_id);
@@ -114,10 +117,10 @@ pub mod tests {
 
         let mut db = DataPersistence::new();
 
-        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+        let mut profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionCreateProfile::new(
-            &mut profile_data,
+            profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -126,6 +129,7 @@ pub mod tests {
             &phone_number,
         );
         ts.execute();
+        drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
         let profile = profile_data.get_profile(&profile_id);

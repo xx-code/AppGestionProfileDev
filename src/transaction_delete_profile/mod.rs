@@ -5,12 +5,12 @@ use crate::{
 };
 
 struct TransactionDeleteProfile<'a> {
-    db: &'a mut ProfileTransactionPersistence<'a>,
+    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String
 }
 
 impl TransactionDeleteProfile<'_> {
-    fn new<'a>(db: &'a mut ProfileTransactionPersistence<'a>, profile_id: &'a String) -> TransactionDeleteProfile<'a> {
+    fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String) -> TransactionDeleteProfile<'a> {
         TransactionDeleteProfile { 
             db, 
             profile_id
@@ -39,11 +39,13 @@ mod test {
     fn test_delete_profile() {
         let mut db = DataPersistence::new();
         setup_profile(&mut db);
-        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let profile_id = String::from("profile1");
-        let mut ts = TransactionDeleteProfile::new(&mut profile_data, &profile_id);
+        let mut ts = TransactionDeleteProfile::new(profile_data, &profile_id);
         ts.execute();
+
+        drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
         let profile = profile_data.get_profile(&profile_id);

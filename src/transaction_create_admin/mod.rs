@@ -3,14 +3,14 @@ use crate::admin_transaction_repository::AdminTransactionRepository;
 use crate::transaction::Transaction;
 use crate::admin_transaction_persistence::AdminTransactionPersistence;
 pub struct TransactionCreateAdmin<'a> {
-    db: &'a mut AdminTransactionPersistence<'a>,
+    db: Box<dyn AdminTransactionRepository + 'a>,
     admin_id: &'a String,
     username: &'a String,
     password: &'a String,
 }
 
 impl TransactionCreateAdmin<'_> {
-    pub fn new<'a>(db: &'a mut AdminTransactionPersistence<'a>, admin_id: &'a String, username: &'a String, password: &'a String) -> TransactionCreateAdmin<'a> {
+    pub fn new<'a>(db: Box<dyn AdminTransactionRepository + 'a>, admin_id: &'a String, username: &'a String, password: &'a String) -> TransactionCreateAdmin<'a> {
         TransactionCreateAdmin {
             db,
             admin_id, 
@@ -48,18 +48,18 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let mut admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut new_admin = TransactionCreateAdmin::new(
-            &mut admin_data,
+            admin_data,
             &admin_id, 
             &username,
             &password
         );
 
         new_admin.execute();
+        drop(new_admin);
         
-
         let admin_data = AdminTransactionPersistence::build(&mut db);
         let admin = admin_data.get_admin(&admin_id).unwrap();
 
