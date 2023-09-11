@@ -4,7 +4,7 @@ use entities::resume::{
     Resume,
     ResumeType
 };
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
 
 pub struct TransactionAddResumeCurrent<'a> {
     db_resume: Box<dyn ResumeTransactionRepository + 'a>,
@@ -28,7 +28,7 @@ impl TransactionAddResumeCurrent<'_> {
     }
 }
 impl Transaction for TransactionAddResumeCurrent<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume = Resume::new(
             self.resume_id,
             self.title,
@@ -39,6 +39,7 @@ impl Transaction for TransactionAddResumeCurrent<'_> {
         );
 
         self.db_resume.add_resume(resume);
+        Ok(())
     }
 }
 
@@ -66,8 +67,7 @@ impl TransactionAddResumeComplet<'_> {
     }
 }
 impl Transaction for TransactionAddResumeComplet<'_> {
-    fn execute(&mut self) -> () {
-
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         if self.date_start < self.date_end {
             let resume = Resume::new(
                 self.resume_id,
@@ -79,6 +79,10 @@ impl Transaction for TransactionAddResumeComplet<'_> {
             );
     
             self.db_resume.add_resume(resume);
+            Ok(())
+        } else {
+            Err(Box::new(ErrorResume::DateEndMustBeSuperiorDateStart))
         }
+        
     }
 }

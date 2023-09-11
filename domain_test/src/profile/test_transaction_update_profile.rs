@@ -31,7 +31,7 @@ pub mod test {
             &username,
             &password,
         );
-        ts.execute();
+        let _ = ts.execute();
     }
 
     pub fn setup_profile(db: &mut DataPersistence) {
@@ -52,7 +52,7 @@ pub mod test {
             &email_address,
             &phone_number,
         );
-        ts.execute();
+        let _ = ts.execute();
     }
     #[test]
     fn test_update_firstname_profile() {
@@ -69,7 +69,7 @@ pub mod test {
             &profile_id, 
             &new_firstname
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -93,7 +93,7 @@ pub mod test {
             &profile_id, 
             &new_lastname
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -117,7 +117,7 @@ pub mod test {
             &profile_id, 
             &new_email
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -142,7 +142,7 @@ pub mod test {
             &profile_id, 
             &new_phone
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
        
         let profile_data = ProfileTransactionPersistence::build(&mut db);

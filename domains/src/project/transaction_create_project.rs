@@ -1,7 +1,7 @@
 use entities::project::Project;
 use repositories::project_transaction_repository::ProjectTransactionRepository;
 use time::Date;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::ErrorDomain};
 pub struct TransactionCreateCurrentProject<'a> {
     db: Box<dyn ProjectTransactionRepository + 'a>,
     project_id: &'a String,
@@ -23,7 +23,7 @@ impl TransactionCreateCurrentProject<'_> {
 }
 
 impl Transaction for TransactionCreateCurrentProject<'_> {
-    fn execute(&mut self){
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>>{
         let project = Project::new(
             self.project_id,
             self.title,
@@ -32,6 +32,7 @@ impl Transaction for TransactionCreateCurrentProject<'_> {
             None
         );
         self.db.create_project(project);
+        Ok(())
     }
 }
 
@@ -58,7 +59,7 @@ impl TransactionCreateCompletProject<'_> {
 }
 
 impl Transaction for TransactionCreateCompletProject<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = Project::new(
             self.project_id,
             self.title,
@@ -67,5 +68,6 @@ impl Transaction for TransactionCreateCompletProject<'_> {
             Some(self.date_end)
         );
         self.db.create_project(project);
+        Ok(())
     }
 }

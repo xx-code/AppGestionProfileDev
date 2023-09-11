@@ -35,7 +35,7 @@ mod tests {
             &type_resume, 
             &date_start
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
         
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -67,7 +67,7 @@ mod tests {
             &date_start,
             &date_end
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -100,11 +100,9 @@ mod tests {
             &date_start,
             &date_end
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
 
-        let resume_data = ResumeTransactionPersistence::build(&mut db);
-        let resume = resume_data.get_resume(&resume_id);
-        assert!(resume.is_none());
+        assert_eq!(res.is_ok(), false);
     }
 }

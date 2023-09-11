@@ -1,7 +1,6 @@
 use repositories::skill_transaction_repository::SkillTransactionRepository;
 use entities::skill::Skill;
-use crate::transaction::Transaction;
-
+use crate::{transaction::Transaction, errors::ErrorDomain};
 
 pub struct TransactionAddSkill<'a> {
     db: Box<dyn SkillTransactionRepository + 'a>,
@@ -22,7 +21,7 @@ impl TransactionAddSkill<'_> {
     }
 }
 impl Transaction for TransactionAddSkill<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill = Skill::new(
             self.skill_id, 
             self.title, 
@@ -30,5 +29,6 @@ impl Transaction for TransactionAddSkill<'_> {
             self.logo
         );
         self.db.add_skill(skill);
+        Ok(())
     }
 }

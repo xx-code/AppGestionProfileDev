@@ -36,7 +36,7 @@ mod test {
             &date_start,
             &date_end
         );
-        transaction.execute();
+        let _ = transaction.execute();
         drop(transaction);
     }
     #[test]
@@ -54,7 +54,7 @@ mod test {
             &project_id,
             &title
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -78,7 +78,7 @@ mod test {
             &project_id,
             &descripiton
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -102,7 +102,7 @@ mod test {
             &project_id,
             &date_start
         );
-        ts.execute();
+        let _ =  ts.execute();
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -126,7 +126,7 @@ mod test {
             &project_id,
             &date_end
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -149,13 +149,10 @@ mod test {
             &project_id,
             &new_date_start
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let project = project_data.get_project(&project_id).unwrap();
-
-        assert_ne!(project.get_date_start(), &new_date_start);
+        assert_eq!(res.is_ok(), false);
     }
     #[test]
     fn test_not_accept_date_end_less_than_date_start() {
@@ -172,12 +169,9 @@ mod test {
             &project_id,
             &new_date_end
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
-
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let project = project_data.get_project(&project_id).unwrap();
-
-        assert_ne!(&project.get_date_end().unwrap(), &new_date_end);
+        
+        assert_eq!(res.is_ok(), false);
     }    
 }

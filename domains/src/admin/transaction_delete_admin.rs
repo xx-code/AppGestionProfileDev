@@ -1,4 +1,4 @@
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
 use repositories::admin_transaction_repository::AdminTransactionRepository;
 
 pub struct TransactionDeleteAdmin<'a> {
@@ -16,7 +16,13 @@ impl TransactionDeleteAdmin<'_>{
 }
 
 impl Transaction for TransactionDeleteAdmin<'_> {
-    fn execute(&mut self) -> () {
-        self.db.delete_admin(self.admin_id);
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>>{
+        let admin = self.db.get_admin(self.admin_id);
+
+        if !admin.is_none() {
+            self.db.delete_admin(self.admin_id);
+            return Ok(())
+        } 
+        return Err(Box::new(ErrorAdmin::AdminNoExist))
     }
 }

@@ -1,5 +1,8 @@
 use repositories::project_transaction_repository::ProjectTransactionRepository;
-use crate::transaction::Transaction;
+use crate::{
+    transaction::Transaction, 
+    errors::{ErrorDomain, project::ErrorProject}
+};
 
 pub struct TransactionDeleteProject<'a> {
     db: Box<dyn ProjectTransactionRepository + 'a>,
@@ -16,7 +19,15 @@ impl TransactionDeleteProject<'_> {
 }
 
 impl Transaction for TransactionDeleteProject<'_> {
-    fn execute(&mut self) -> () {
-        self.db.delete_project(self.project_id);
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let project = self.db.get_project(self.project_id);
+        
+        if !project.is_none() {
+            self.db.delete_project(self.project_id);
+            Ok(())
+        } else {
+            Err(Box::new(ErrorProject::ProjectNotExist))
+        }
+        
     }
 }

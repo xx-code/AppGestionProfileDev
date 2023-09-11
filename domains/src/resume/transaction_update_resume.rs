@@ -1,7 +1,7 @@
 use time::Date;
 use repositories::resume_transaction_repository::ResumeTransactionRepository;
 use entities::resume::ResumeType;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
 
 
 pub struct TransactionUpdateResumeTitle<'a> {
@@ -19,14 +19,15 @@ impl TransactionUpdateResumeTitle<'_> {
     }
 }
 impl Transaction for TransactionUpdateResumeTitle<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             resume.set_title(self.title);
             self.db.update_resume(resume);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorResume::ResumeNotExist))
         }
     }
 }
@@ -46,14 +47,15 @@ impl TransactionUpdateResumeDescription<'_> {
     }
 }
 impl Transaction for TransactionUpdateResumeDescription<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             resume.set_description(self.description);
             self.db.update_resume(resume);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorResume::ResumeNotExist))
         }
     }
 }
@@ -73,14 +75,16 @@ impl TransactionUpdateResumeTypeResume<'_> {
     }
 }
 impl Transaction for TransactionUpdateResumeTypeResume<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
+        
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             resume.set_type_resume(self.type_resume);
             self.db.update_resume(resume);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorResume::ResumeNotExist))
         }
     }
 }
@@ -100,23 +104,26 @@ impl TransactionUpdateResumeDateStart<'_> {
     }
 }
 impl Transaction for TransactionUpdateResumeDateStart<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
+        
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             if !resume.get_date_end().is_none() {
                 if self.date_start < &resume.get_date_end().unwrap() {
                     resume.set_date_start(self.date_start);
-                    self.db.update_resume(resume)
+                    self.db.update_resume(resume);
+                    return Ok(())
                 } else {
-                    println!("add error  ")
+                    return Err(Box::new(ErrorResume::DateEndMustBeSuperiorDateStart))
                 }
             } else {
                 resume.set_date_start(self.date_start);
                 self.db.update_resume(resume);
+                return Ok(())
             }
         } else {
-            println!("ADD test gestion error no profile")
+            return Err(Box::new(ErrorResume::ResumeNotExist))
         }
     }
 }
@@ -136,18 +143,20 @@ impl TransactionUpdateResumeDateEnd<'_> {
     }
 }
 impl Transaction for TransactionUpdateResumeDateEnd<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
+        
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             if self.date_end > &resume.get_date_start() {
                 resume.set_date_end(Some(self.date_end));
                 self.db.update_resume(resume);
+                return Ok(())
             } else {
-                println!("add error  ")
+                return Err(Box::new(ErrorResume::DateEndMustBeSuperiorDateStart))
             }
         } else {
-            println!("ADD test gestion error no profile")
+            return Err(Box::new(ErrorResume::ResumeNotExist))
         }
     }
 }

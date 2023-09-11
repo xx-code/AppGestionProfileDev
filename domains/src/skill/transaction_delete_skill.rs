@@ -1,5 +1,8 @@
 use repositories::skill_transaction_repository::SkillTransactionRepository;
-use crate::transaction::Transaction;
+use crate::{
+    transaction::Transaction, 
+    errors::{ErrorDomain, skill::ErrorSkill}
+};
 
 
 pub struct TransactionDeleteSkill<'a> {
@@ -16,7 +19,14 @@ impl TransactionDeleteSkill<'_> {
     }
 }
 impl Transaction for TransactionDeleteSkill<'_> {
-    fn execute(&mut self) -> () {
-        self.db.delete_skill(self.skill_id);
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let skill = self.db.get_skill(self.skill_id);
+
+        if !skill.is_none() {
+            self.db.delete_skill(self.skill_id);
+            Ok(())
+        } else {
+            Err(Box::new(ErrorSkill::SkillNotExist))
+        }
     }
 }

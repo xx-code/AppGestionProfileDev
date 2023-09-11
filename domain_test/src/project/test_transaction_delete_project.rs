@@ -30,7 +30,7 @@ mod test {
             &description,
             &date_start
         );
-        transaction.execute();
+        let _ =transaction.execute();
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -38,12 +38,28 @@ mod test {
             project_data,
             &project_id,
         );
-        transaction.execute();
+        let _ = transaction.execute();
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let project = project_data.get_project(&project_id);
 
         assert!(project.is_none())
+    }
+    
+    #[test]
+    fn test_not_delete_project_no_exist() {
+        let project_id = String::from("project1");
+
+        let mut db = DataPersistence::new();
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut transaction = TransactionDeleteProject::new(
+            project_data,
+            &project_id,
+        );
+        let res = transaction.execute();
+        drop(transaction);
+
+        assert_eq!(res.is_ok(), false);
     }
 }

@@ -37,7 +37,7 @@ pub mod tests {
             &date_start,
             &date_end
         );
-        ts.execute();
+        let _ = ts.execute();
     }
     #[test]
     fn test_update_resume_title() {
@@ -53,7 +53,7 @@ pub mod tests {
             &resume_id,
             &new_title, 
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
         
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -75,7 +75,7 @@ pub mod tests {
             &resume_id,
             &new_description, 
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -96,7 +96,7 @@ pub mod tests {
             &resume_id,
             &new_type_resume,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -117,7 +117,7 @@ pub mod tests {
             &resume_id,
             &new_date_start, 
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -138,7 +138,7 @@ pub mod tests {
             &resume_id,
             &new_date_end, 
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -160,12 +160,10 @@ pub mod tests {
             &resume_id,
             &new_date_start, 
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
 
-        let resume_data = ResumeTransactionPersistence::build(&mut db);
-        let resume = resume_data.get_resume(&resume_id).unwrap();
-        assert_ne!(resume.get_date_start(), &new_date_start);
+        assert_eq!(res.is_ok(), false);
     }
     #[test]
     fn test_not_accept_date_end_less_than_date_start() {
@@ -181,11 +179,9 @@ pub mod tests {
             &resume_id,
             &new_date_end, 
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
 
-        let resume_data = ResumeTransactionPersistence::build(&mut db);
-        let resume = resume_data.get_resume(&resume_id).unwrap();
-        assert_ne!(&resume.get_date_end().unwrap(), &new_date_end);
+        assert_eq!(res.is_ok(), false);
     }
 }

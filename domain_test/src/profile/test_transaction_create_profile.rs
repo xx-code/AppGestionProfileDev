@@ -34,7 +34,7 @@ pub mod tests {
             &username,
             &password,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
@@ -48,7 +48,7 @@ pub mod tests {
             &email_address,
             &phone_number,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
         
 
@@ -84,12 +84,9 @@ pub mod tests {
             &email_address,
             &phone_number,
         );
-        ts.execute();
+        let res = ts.execute();
         drop(ts);
 
-        let profile_data = ProfileTransactionPersistence::build(&mut db);
-        let profile = profile_data.get_profile(&profile_id);
-
-        assert!(profile.is_none());
+        assert_eq!(res.is_ok(), false);
     }
 }

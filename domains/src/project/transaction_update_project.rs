@@ -1,6 +1,6 @@
 use repositories::project_transaction_repository::ProjectTransactionRepository;
 use time::Date;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
 
 pub struct TransactionUpdateProjectTitle<'a> {
     db: Box<dyn ProjectTransactionRepository + 'a>,
@@ -17,15 +17,16 @@ impl TransactionUpdateProjectTitle<'_> {
     }
 }
 impl Transaction for TransactionUpdateProjectTitle<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
-
+        
         if !project.is_none() {
             let mut project = project.unwrap().clone();
             project.set_title(self.title);
             self.db.update_project(project);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProject::ProjectNotExist))
         }
     }
 }
@@ -45,15 +46,16 @@ impl TransactionUpdateProjectDescription<'_> {
     }
 }
 impl Transaction for TransactionUpdateProjectDescription<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
-
+        
         if !project.is_none() {
             let mut project = project.unwrap().clone();
             project.set_description(self.description);
             self.db.update_project(project);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProject::ProjectNotExist))
         }
     }
 }
@@ -73,25 +75,27 @@ impl TransactionUpdateProjectDateStart<'_> {
     }
 }
 impl Transaction for TransactionUpdateProjectDateStart<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
-
+        
         if !project.is_none() {
             if !project.unwrap().date_end.is_none() {
                 if &project.unwrap().date_end.unwrap() > self.date_start {
                     let mut project = project.unwrap().clone();
                     project.set_date_start(self.date_start);
                     self.db.update_project(project);
+                    Ok(())
                 } else {
-                    println!("error")
+                    Err(Box::new(ErrorProject::DateEndMustBeSuperiorDateStart))
                 }
             } else {
                 let mut project = project.unwrap().clone();
                 project.set_date_start(self.date_start);
                 self.db.update_project(project);
+                Ok(())
             }
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProject::ProjectNotExist))
         }
     }
 }
@@ -111,19 +115,20 @@ impl TransactionUpdateProjectDateEnd<'_> {
     }
 }
 impl Transaction for TransactionUpdateProjectDateEnd<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
-
+        
         if !project.is_none() {
             if self.date_end > &project.unwrap().date_start {
                 let mut project = project.unwrap().clone();
                 project.set_date_end(Some(self.date_end));
                 self.db.update_project(project);
+                Ok(())
             } else {
-                println!("Error")
+                Err(Box::new(ErrorProject::DateEndMustBeSuperiorDateStart))
             }
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProject::ProjectNotExist))
         }
     }
 }

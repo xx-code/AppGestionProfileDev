@@ -30,7 +30,7 @@ mod test {
             &description,
             &date_start
         );
-        transaction.execute();
+        let _ = transaction.execute();
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -60,7 +60,7 @@ mod test {
             &date_start,
             &date_end
         );
-        transaction.execute();
+        let _ = transaction.execute();
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));

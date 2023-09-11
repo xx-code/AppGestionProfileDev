@@ -28,7 +28,7 @@ mod tests {
             is_current,
             &logo
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);

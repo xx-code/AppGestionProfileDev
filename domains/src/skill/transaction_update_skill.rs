@@ -1,5 +1,5 @@
 use repositories::skill_transaction_repository::SkillTransactionRepository;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, skill::ErrorSkill}};
 
 pub struct TransactionUpdateTitleSkill<'a> {
     db: Box<dyn SkillTransactionRepository + 'a>,
@@ -16,14 +16,16 @@ impl TransactionUpdateTitleSkill<'_> {
     }
 }
 impl Transaction for TransactionUpdateTitleSkill<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
+        
         if !skill.is_none() {
             let mut skill = skill.unwrap().clone();
             skill.set_title(self.title);
             self.db.update_skill(skill);
+            Ok(())
         } else {
-            println!("ADD test gestion error no skill")
+            Err(Box::new(ErrorSkill::SkillNotExist))
         }
     }
 }
@@ -43,14 +45,16 @@ impl TransactionUpdateIsCurrentSkill<'_> {
     }
 }
 impl Transaction for TransactionUpdateIsCurrentSkill<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
+        
         if !skill.is_none() {
             let mut skill = skill.unwrap().clone();
             skill.set_is_current(self.is_current);
             self.db.update_skill(skill);
+            Ok(())
         } else {
-            println!("ADD test gestion error no skill")
+            Err(Box::new(ErrorSkill::SkillNotExist))
         }
     }
 }
@@ -70,14 +74,16 @@ impl TransactionUpdateLogoSkill<'_> {
     }
 }
 impl Transaction for TransactionUpdateLogoSkill<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
+        
         if !skill.is_none() {
             let mut skill = skill.unwrap().clone();
             skill.set_logo(self.logo);
             self.db.update_skill(skill);
+            Ok(())
         } else {
-            println!("ADD test gestion error no skill")
+            Err(Box::new(ErrorSkill::SkillNotExist))
         }
     }
 }

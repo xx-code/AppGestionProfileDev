@@ -19,7 +19,7 @@ mod test {
 
         let profile_id = String::from("profile1");
         let mut ts = TransactionDeleteProfile::new(profile_data, &profile_id);
-        ts.execute();
+        let _ = ts.execute();
 
         drop(ts);
 
@@ -27,5 +27,17 @@ mod test {
         let profile = profile_data.get_profile(&profile_id);
 
         assert!(profile.is_none());
+    }
+    #[test]
+    fn no_delete_test_profile_not_exist() {
+        let mut db = DataPersistence::new();
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+
+        let profile_id = String::from("profile1");
+        let mut ts = TransactionDeleteProfile::new(profile_data, &profile_id);
+        let res = ts.execute();
+        drop(ts);
+
+        assert_eq!(res.is_ok(), false)
     }
 }

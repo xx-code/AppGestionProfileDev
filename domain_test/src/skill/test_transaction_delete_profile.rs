@@ -30,7 +30,7 @@ mod tests {
             is_current,
             &logo
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
@@ -38,11 +38,26 @@ mod tests {
             skill_data,
             &skill_id,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
         let skill = skill_data.get_skill(&skill_id);
         assert!(skill.is_none())
+    }
+
+    #[test]
+    fn test_no_delete_skill_if_not_exist() {
+        let skill_id = String::from("Skill1");
+        let mut db = DataPersistence::new();
+        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut ts = TransactionDeleteSkill::new(
+            skill_data,
+            &skill_id,
+        );
+        let res = ts.execute();
+        drop(ts);
+
+        assert_eq!(res.is_ok(), false);
     }
 }

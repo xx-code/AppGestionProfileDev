@@ -1,5 +1,5 @@
 use repositories::profile_transaction_repository::ProfileTransactionRepository;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 
 pub struct TransactionUpdateFirstnameProfile<'a> {
     db: Box<dyn ProfileTransactionRepository + 'a>,
@@ -16,14 +16,15 @@ impl TransactionUpdateFirstnameProfile<'_> {
     }
 }
 impl Transaction for TransactionUpdateFirstnameProfile<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_firstname(self.firstname);
             self.db.update_profile(profile);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProfile::ProfileNotExist))
         }
     }
 }
@@ -43,14 +44,15 @@ impl TransactionUpdateLastnameProfile<'_> {
     }
 }
 impl Transaction for TransactionUpdateLastnameProfile<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_lastname(self.lastname);
             self.db.update_profile(profile);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProfile::ProfileNotExist))
         }
     }
 }
@@ -70,14 +72,15 @@ impl TransactionUpdateEmailAddressProfile<'_> {
     }
 }
 impl Transaction for TransactionUpdateEmailAddressProfile<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_email_address(self.email_address);
             self.db.update_profile(profile);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProfile::ProfileNotExist))
         }
     }
 }
@@ -97,14 +100,15 @@ impl TransactionUpdatePhoneNumberProfile<'_> {
     }
 }
 impl Transaction for TransactionUpdatePhoneNumberProfile<'_>{
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_phone_number(self.phone_number);
             self.db.update_profile(profile);
+            Ok(())
         } else {
-            println!("ADD test gestion error no profile")
+            Err(Box::new(ErrorProfile::ProfileNotExist))
         }
     }   
 }

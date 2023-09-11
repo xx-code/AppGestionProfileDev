@@ -30,4 +30,13 @@ impl AdminTransactionRepository for AdminTransactionPersistence<'_> {
             self.db.admins.remove(index.unwrap());
         }
     }
+
+    fn is_already_exist(&self, username: &String) -> bool {
+        for admin in &self.db.admins {
+            if admin.get_username() == username {
+                return true
+            }
+        }
+        false
+    }
 }

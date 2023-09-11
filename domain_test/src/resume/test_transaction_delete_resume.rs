@@ -37,7 +37,7 @@ mod tests {
             &date_start,
             &date_end
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
@@ -46,11 +46,28 @@ mod tests {
             resume_data,
             &resume_id,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
         let resume = resume_data.get_resume(&resume_id);
         assert!(resume.is_none());
     }
+
+    #[test]
+    fn test_not_delete_resume_if_no_exist() {
+        let mut db = DataPersistence::new(); 
+
+        let resume_id = String::from("resume1");
+        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionDeleteResume::new(
+            resume_data,
+            &resume_id,
+        );
+        let res = ts.execute();
+        drop(ts);
+
+        assert_eq!(res.is_ok(), false);
+    }    
 }

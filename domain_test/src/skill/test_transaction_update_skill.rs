@@ -33,7 +33,7 @@
             is_current,
             &logo
         );
-        ts.execute();
+        let _ = ts.execute();
     }
 
     #[test]
@@ -52,7 +52,7 @@
             &skill_id, 
             &new_title,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -76,7 +76,7 @@
             &skill_id, 
             &new_logo,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -101,7 +101,7 @@
             &skill_id, 
             is_current,
         );
-        ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);

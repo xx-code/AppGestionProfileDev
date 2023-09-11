@@ -1,6 +1,6 @@
 use repositories::profile_transaction_repository::ProfileTransactionRepository;
 use entities::profile::Profile;
-use crate::transaction::Transaction;
+use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
 
 pub struct TransactionCreateProfile<'a> {
     db: Box<dyn ProfileTransactionRepository + 'a>,
@@ -27,7 +27,7 @@ impl TransactionCreateProfile<'_> {
 }
 
 impl Transaction for TransactionCreateProfile<'_> {
-    fn execute(&mut self) -> () {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         
         if self.db.is_admin_exist(self.admin_id) {
             let profile = Profile::new(
@@ -40,6 +40,9 @@ impl Transaction for TransactionCreateProfile<'_> {
             );
     
             self.db.create_profile(profile);
+            return Ok(())
+        } else {
+            return Err(Box::new(ErrorAdmin::AdminNoExist))
         }
     }
 }
