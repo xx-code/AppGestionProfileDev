@@ -1,7 +1,6 @@
-use repositories::skill_transaction_repository::SkillTransactionRepository;
 use entities::skill::Skill;
 use crate::{transaction::Transaction, errors::ErrorDomain};
-
+use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 pub struct TransactionAddSkill<'a> {
     db: Box<dyn SkillTransactionRepository + 'a>,
     skill_id: &'a String,

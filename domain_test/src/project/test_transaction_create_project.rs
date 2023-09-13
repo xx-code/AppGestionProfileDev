@@ -4,9 +4,9 @@ mod test {
         data_persistence::DataPersistence,
         project_transaction_persistence::ProjectTransactionPersistence,
     };
-    use repositories::project_transaction_repository::ProjectTransactionRepository;
     use time::Date;
     use domains::{
+        repositories::project_transaction_repository::ProjectTransactionRepository,
         transaction::Transaction,
         project::transaction_create_project::{
             TransactionCreateCurrentProject,

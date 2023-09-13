@@ -1,6 +1,7 @@
 #[cfg(test)]
 pub mod test {
     use domains::{
+        repositories::profile_transaction_repository::ProfileTransactionRepository,
         admin::transaction_create_admin::TransactionCreateAdmin,
         profile::transaction_create_profile::TransactionCreateProfile,
         profile::transaction_update_profile::{
@@ -16,7 +17,6 @@ pub mod test {
         profile_transaction_persistence::ProfileTransactionPersistence,
         admin_transaction_persistence::AdminTransactionPersistence
     };
-    use repositories::profile_transaction_repository::ProfileTransactionRepository;
 
     pub fn setup_admin(db: &mut DataPersistence) {
         let admin_id = String::from("admin_1");

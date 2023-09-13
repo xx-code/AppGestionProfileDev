@@ -5,8 +5,8 @@
         data_persistence::DataPersistence,
         skill_transaction_persistence::SkillTransactionPersistence
     };
-    use repositories::skill_transaction_repository::SkillTransactionRepository;
     use domains::{
+        repositories::skill_transaction_repository::SkillTransactionRepository,
         transaction::Transaction,
         skill::{
             transaction_add_skill::TransactionAddSkill,

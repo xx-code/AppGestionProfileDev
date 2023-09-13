@@ -1,4 +1,4 @@
-use repositories::profile_transaction_repository::ProfileTransactionRepository;
+use domains::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use entities::entity::Entity;
 use entities::profile::Profile;
 use crate::data_persistence::{DataPersistence, Indexing};

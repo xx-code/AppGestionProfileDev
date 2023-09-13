@@ -10,4 +10,3 @@ time = "0.3.28"
 domains = { path = "../domains" }
 entities = { path = "../entities" }
 persistence = { path = "../persistence" }
-repositories = { path = "../repositories" }

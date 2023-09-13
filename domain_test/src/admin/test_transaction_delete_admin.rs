@@ -1,11 +1,11 @@
 #[cfg(test)]
 mod tests {
     use domains::{
+        repositories::admin_transaction_repository::AdminTransactionRepository,
         transaction::Transaction,
         admin::transaction_create_admin::TransactionCreateAdmin,
         admin::transaction_delete_admin::TransactionDeleteAdmin
     };
-    use repositories::admin_transaction_repository::AdminTransactionRepository;
     use persistence::{
         data_persistence::DataPersistence,
         admin_transaction_persistence::AdminTransactionPersistence, 

@@ -1,4 +1,4 @@
-use repositories::resume_transaction_repository::ResumeTransactionRepository;
+use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 use crate::{
     transaction::Transaction, 
     errors::{ErrorDomain, resume::ErrorResume}

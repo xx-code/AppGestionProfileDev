@@ -1,5 +1,5 @@
 use entities::admin::Admin;
-use repositories::admin_transaction_repository::AdminTransactionRepository;
+use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 use crate::errors::admin::ErrorAdmin;
 use crate::transaction::Transaction;
 use crate::errors::ErrorDomain;

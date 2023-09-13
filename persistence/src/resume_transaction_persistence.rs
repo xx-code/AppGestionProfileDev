@@ -1,4 +1,4 @@
-use repositories::resume_transaction_repository::ResumeTransactionRepository;
+use domains::repositories::resume_transaction_repository::ResumeTransactionRepository;
 use entities::{
     entity::Entity,
     resume::Resume

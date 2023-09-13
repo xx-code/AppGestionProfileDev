@@ -1,5 +1,5 @@
 use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
-use repositories::admin_transaction_repository::AdminTransactionRepository;
+use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 
 pub struct TransactionDeleteAdmin<'a> {
     db: Box<dyn AdminTransactionRepository + 'a>, 

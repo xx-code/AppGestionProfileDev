@@ -1,7 +1,6 @@
-use repositories::project_transaction_repository::ProjectTransactionRepository;
 use time::Date;
 use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
-
+use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 pub struct TransactionUpdateProjectTitle<'a> {
     db: Box<dyn ProjectTransactionRepository + 'a>,
     project_id: &'a String,

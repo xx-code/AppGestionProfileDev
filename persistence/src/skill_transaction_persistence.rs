@@ -2,7 +2,7 @@ use entities::{
     skill::Skill,
     entity::Entity
 };
-use repositories::skill_transaction_repository::SkillTransactionRepository;
+use domains::repositories::skill_transaction_repository::SkillTransactionRepository;
 use crate::data_persistence::{DataPersistence, Indexing};
 
 pub struct SkillTransactionPersistence<'a> {

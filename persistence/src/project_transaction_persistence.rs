@@ -1,5 +1,5 @@
 use entities::{entity::Entity, project::Project};
-use repositories::project_transaction_repository::ProjectTransactionRepository;
+use domains::repositories::project_transaction_repository::ProjectTransactionRepository;
 use crate::data_persistence::{DataPersistence, Indexing};
 
 pub struct ProjectTransactionPersistence<'a> {

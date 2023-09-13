@@ -1,6 +1,6 @@
-use crate::data_persistence::{DataPersistence, Indexing};
-use repositories::admin_transaction_repository::AdminTransactionRepository;
+use domains::repositories::admin_transaction_repository::AdminTransactionRepository;
 use entities::admin::Admin;
+use crate::data_persistence::{DataPersistence, Indexing};
 pub struct AdminTransactionPersistence<'a> {
     db: &'a mut DataPersistence
 }

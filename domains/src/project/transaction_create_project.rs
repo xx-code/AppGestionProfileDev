@@ -1,7 +1,7 @@
 use entities::project::Project;
-use repositories::project_transaction_repository::ProjectTransactionRepository;
 use time::Date;
 use crate::{transaction::Transaction, errors::ErrorDomain};
+use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 pub struct TransactionCreateCurrentProject<'a> {
     db: Box<dyn ProjectTransactionRepository + 'a>,
     project_id: &'a String,

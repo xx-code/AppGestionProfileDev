@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod test {
     use domains::{
+        repositories::profile_transaction_repository::ProfileTransactionRepository,
         profile::transaction_delete_profile::TransactionDeleteProfile,
         transaction::Transaction,
     };
@@ -8,7 +9,6 @@ mod test {
         data_persistence::DataPersistence,
         profile_transaction_persistence::ProfileTransactionPersistence,
     };
-    use repositories::profile_transaction_repository::ProfileTransactionRepository;
     use crate::profile::test_transaction_update_profile::test::setup_profile;
     
     #[test]

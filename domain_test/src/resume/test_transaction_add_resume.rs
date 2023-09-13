@@ -3,6 +3,7 @@ mod tests {
     use entities::resume::ResumeType;
     use domains::{
         transaction::Transaction,
+        repositories::resume_transaction_repository::ResumeTransactionRepository,
         resume::transaction_add_resume::{
             TransactionAddResumeComplet,
             TransactionAddResumeCurrent,
@@ -12,7 +13,6 @@ mod tests {
         data_persistence::DataPersistence,
         resume_transaction_persistence::ResumeTransactionPersistence,
     };
-    use repositories::resume_transaction_repository::ResumeTransactionRepository;
     use time::Date;
     
     #[test]

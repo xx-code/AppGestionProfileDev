@@ -1,4 +1,4 @@
-use repositories::profile_transaction_repository::ProfileTransactionRepository;
+use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 
 pub struct TransactionUpdateFirstnameProfile<'a> {

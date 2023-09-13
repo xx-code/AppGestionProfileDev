@@ -1,6 +1,5 @@
-use repositories::skill_transaction_repository::SkillTransactionRepository;
+use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, skill::ErrorSkill}};
-
 pub struct TransactionUpdateTitleSkill<'a> {
     db: Box<dyn SkillTransactionRepository + 'a>,
     skill_id: &'a String,

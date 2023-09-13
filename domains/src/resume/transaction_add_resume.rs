@@ -1,11 +1,10 @@
 use time::Date;
-use repositories::resume_transaction_repository::ResumeTransactionRepository;
 use entities::resume::{
     Resume,
     ResumeType
 };
 use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
-
+use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionAddResumeCurrent<'a> {
     db_resume: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,

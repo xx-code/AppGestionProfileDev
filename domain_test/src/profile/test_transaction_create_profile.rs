@@ -1,6 +1,7 @@
 #[cfg(test)]
 pub mod tests {
     use domains::{
+        repositories::profile_transaction_repository::ProfileTransactionRepository,
         admin::transaction_create_admin::TransactionCreateAdmin,
         profile::transaction_create_profile::TransactionCreateProfile,
         transaction::Transaction,
@@ -10,7 +11,6 @@ pub mod tests {
         profile_transaction_persistence::ProfileTransactionPersistence,
         admin_transaction_persistence::AdminTransactionPersistence
     };
-    use repositories::profile_transaction_repository::ProfileTransactionRepository;
     use entities::entity::Entity;
 
     #[test]

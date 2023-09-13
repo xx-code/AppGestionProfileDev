@@ -1,7 +1,6 @@
-use repositories::profile_transaction_repository::ProfileTransactionRepository;
 use entities::profile::Profile;
 use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
-
+use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 pub struct TransactionCreateProfile<'a> {
     db: Box<dyn ProfileTransactionRepository + 'a>,
     admin_id: &'a String,

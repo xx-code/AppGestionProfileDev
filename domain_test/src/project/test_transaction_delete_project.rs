@@ -5,13 +5,13 @@ mod test {
         project_transaction_persistence::ProjectTransactionPersistence,
      };
      use domains::{
-         transaction::Transaction,
-         project::{
+        repositories::project_transaction_repository::ProjectTransactionRepository,
+        transaction::Transaction,
+        project::{
             transaction_create_project::TransactionCreateCurrentProject,
             transaction_delete_project::TransactionDeleteProject,
          }
      };
-     use repositories::project_transaction_repository::ProjectTransactionRepository;
      use time::Date;
     #[test]
     fn test_transaction_delete_project() {

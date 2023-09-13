@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 time = "0.3.28"
 entities = { path = "../entities" }
-repositories = { path= "../repositories" }
+domains = { path= "../domains" }

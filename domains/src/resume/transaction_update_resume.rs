@@ -1,9 +1,7 @@
 use time::Date;
-use repositories::resume_transaction_repository::ResumeTransactionRepository;
 use entities::resume::ResumeType;
 use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
-
-
+use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionUpdateResumeTitle<'a> {
     db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,

@@ -6,6 +6,7 @@ mod test {
     };
     use domains::{
         transaction::Transaction,
+        repositories::project_transaction_repository::ProjectTransactionRepository,
         project::{
            transaction_create_project::TransactionCreateCompletProject,
            transaction_update_project::{
@@ -16,7 +17,6 @@ mod test {
            }
         }
     };
-    use repositories::project_transaction_repository::ProjectTransactionRepository;
     use time::Date;
 
     fn setup(db: &mut DataPersistence) {

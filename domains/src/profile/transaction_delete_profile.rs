@@ -1,5 +1,5 @@
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
-use repositories::profile_transaction_repository::ProfileTransactionRepository;
+use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 
 pub struct TransactionDeleteProfile<'a> {
     db: Box<dyn ProfileTransactionRepository + 'a>,

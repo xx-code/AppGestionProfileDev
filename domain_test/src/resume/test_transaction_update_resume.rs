@@ -3,6 +3,7 @@ pub mod tests {
     use entities::resume::ResumeType;
     use domains::{
         transaction::Transaction,
+        repositories::resume_transaction_repository::ResumeTransactionRepository,
         resume::transaction_add_resume::TransactionAddResumeComplet,
         resume::transaction_update_resume::{
             TransactionUpdateResumeDateEnd,
@@ -16,7 +17,6 @@ pub mod tests {
         data_persistence::DataPersistence,
         resume_transaction_persistence::ResumeTransactionPersistence,
     };
-    use repositories::resume_transaction_repository::ResumeTransactionRepository;
     use time::Date;
 
     fn setup(db: &mut DataPersistence) {
