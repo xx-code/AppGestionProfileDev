@@ -208,4 +208,33 @@ mod test {
         assert_eq!(link.get_address(), &link_address);
         assert_eq!(links.len(), 1);
     }
+    #[test]
+    fn test_to_delete_project_link() {
+        let mut db = DataPersistence::new();
+        setup(&mut db);
+
+        let project_id = String::from("project1");
+
+        let link_id = String::from("LINK1");
+        let link_title = String::from("Title link");
+        let link_address = String::from("linknks@gmail.com");
+
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionDeleteLinkProject::new(
+            project_data,
+            &project_id,
+            &link_id
+        );
+
+        let res = ts.execute();
+        drop(ts);
+
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project = project_data.get_project(&project_id).unwrap();
+        let links = project.get_links();
+
+        assert_eq!(res.is_ok(), true);
+        assert_eq!(links.len(), 0);
+    }
 }
