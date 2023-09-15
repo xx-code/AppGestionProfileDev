@@ -1,3 +1,4 @@
+use entities::link::Link;
 use time::Date;
 use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
@@ -129,5 +130,37 @@ impl Transaction for TransactionUpdateProjectDateEnd<'_> {
         } else {
             Err(Box::new(ErrorProject::ProjectNotExist))
         }
+    }
+}
+
+pub struct TransactionAddLinkProject<'a> {
+    db: Box<dyn ProjectTransactionRepository + 'a>,
+    project_id: &'a String,
+    link_id: &'a String,
+    title: &'a String,
+    address: &'a String
+}
+impl TransactionAddLinkProject<'_> {
+    pub fn new<'a>(db: Box<dyn ProjectTransactionRepository + 'a>, project_id: &'a String, link_id: &'a String, title: &'a String, address: &'a String) -> TransactionAddLinkProject<'a> {
+        TransactionAddLinkProject { 
+            db, 
+            project_id,
+            link_id,
+            title, 
+            address 
+        }
+    }
+}
+impl Transaction for TransactionAddLinkProject<'_> {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let link = Link::new(self.link_id, self.title, self.address);
+        let project = self.db.get_project(self.project_id);
+
+        if project.is_none() {
+            return Err(Box::new(ErrorProject::ProjectNotExist))
+        }
+
+        self.db.create_link_project(self.project_id, link);
+        Ok(())
     }
 }

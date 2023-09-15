@@ -1,4 +1,6 @@
-use entities::{entity::Entity, project::Project};
+use std::borrow::BorrowMut;
+
+use entities::{entity::Entity, project::Project, link::Link};
 use domains::repositories::project_transaction_repository::ProjectTransactionRepository;
 use crate::data_persistence::{DataPersistence, Indexing};
 
@@ -32,5 +34,9 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
     fn delete_project(&mut self, project_id: &String) {
         let index = self.get_index(&self.db.projects, project_id).unwrap();
         self.db.projects.remove(index);
+    }
+    fn create_link_project(&mut self, project_id: &String, link:Link) {
+        let index = self.get_index(&self.db.projects,project_id).unwrap();
+        self.db.projects[index].add_link(link);
     }
 }

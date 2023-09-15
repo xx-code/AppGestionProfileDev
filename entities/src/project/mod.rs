@@ -1,12 +1,14 @@
 use time::Date;
-use crate::entity::Entity;
+use crate::{entity::Entity, link::Link};
+use std::collections::HashMap;
 #[derive(Debug, Clone)]
 pub struct Project {
     pub project_id: String,
     pub title: String,
     pub description: String,
     pub date_start: Date,
-    pub date_end: Option<Date>
+    pub date_end: Option<Date>,
+    pub links: HashMap<String, Link>
 }
 
 impl Entity for Project{
@@ -25,8 +27,13 @@ impl Project {
             title: title.clone(), 
             description: description.clone(), 
             date_start: date_start.clone(), 
-            date_end: date
+            date_end: date,
+            links: HashMap::new()
         }
+    }
+
+    pub fn add_link(&mut self, link: Link) {
+        self.links.insert(link.get_id().clone(), link);
     }
 
     pub fn set_title(&mut self, title: &String) {
@@ -43,6 +50,14 @@ impl Project {
             Some(date) => { self.date_end = Some(date.clone()) },
             None => { self.date_end = None }
         }
+    }
+    pub fn get_link(&self, link_id: &String) -> &Link {
+        &self.links[link_id]
+    }
+    pub fn get_links(&self,) -> Vec<Link> {
+        let links = self.links.values().cloned().collect();
+
+        links
     }
     pub fn get_title(&self,) -> &String {
         &self.title

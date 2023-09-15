@@ -13,7 +13,8 @@ mod test {
             TransactionUpdateProjectTitle,
             TransactionUpdateProjectDescription,
             TransactionUpdateProjectDateStart,
-            TransactionUpdateProjectDateEnd
+            TransactionUpdateProjectDateEnd,
+            TransactionAddLinkProject
            }
         }
     };
@@ -195,15 +196,16 @@ mod test {
             &link_address
         );
 
-        let res = ts.execute();
+        let _ = ts.execute();
         drop(ts);
 
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let project = project_data.get_project(&project_id).unwrap();
         let link = project.get_link(&link_id);
         let links = project.get_links();
 
-        assert_eq!(link.get_title, &link_title);
-        assert_eq!(link.get_address, &link_address);
+        assert_eq!(link.get_title(), &link_title);
+        assert_eq!(link.get_address(), &link_address);
         assert_eq!(links.len(), 1);
     }
 }
