@@ -173,5 +173,37 @@ mod test {
         drop(ts);
         
         assert_eq!(res.is_ok(), false);
-    }    
+    }
+    #[test]
+    fn test_to_add_link_project() {
+        let mut db = DataPersistence::new();
+        setup(&mut db);
+
+        let project_id = String::from("project1");
+
+        let link_id = String::from("LINK1");
+        let link_title = String::from("Title link");
+        let link_address = String::from("linknks@gmail.com");
+
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionAddLinkProject::new(
+            project_data,
+            &project_id,
+            &link_id,
+            &link_title,
+            &link_address
+        );
+
+        let res = ts.execute();
+        drop(ts);
+
+        let project = project_data.get_project(&project_id).unwrap();
+        let link = project.get_link(&link_id);
+        let links = project.get_links();
+
+        assert_eq!(link.get_title, &link_title);
+        assert_eq!(link.get_address, &link_address);
+        assert_eq!(links.len(), 1);
+    }
 }
