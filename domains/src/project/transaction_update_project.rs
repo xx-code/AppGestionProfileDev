@@ -187,6 +187,12 @@ impl Transaction for TransactionDeleteLinkProject<'_> {
             return Err(Box::new(ErrorProject::ProjectNotExist))
         }
 
+        let link = self.db.get_link_project(self.project_id, self.link_id);
+
+        if link.is_none() {
+            return Err(Box::new(ErrorProject::LinkNotExist))
+        }
+
         self.db.delete_link_project(self.project_id, self.link_id);
         Ok(())
     }

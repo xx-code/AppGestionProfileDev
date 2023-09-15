@@ -202,7 +202,7 @@ mod test {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let project = project_data.get_project(&project_id).unwrap();
-        let link = project.get_link(&link_id);
+        let link = project.get_link(&link_id).unwrap();
         let links = project.get_links();
 
         assert_eq!(link.get_title(), &link_title);
@@ -217,6 +217,21 @@ mod test {
         let project_id = String::from("project1");
 
         let link_id = String::from("LINK1");
+        let link_title = String::from("Title link");
+        let link_address = String::from("linknks@gmail.com");
+
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionAddLinkProject::new(
+            project_data,
+            &project_id,
+            &link_id,
+            &link_title,
+            &link_address
+        );
+
+        let _ = ts.execute();
+        drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
@@ -235,5 +250,27 @@ mod test {
 
         assert_eq!(res.is_ok(), true);
         assert_eq!(links.len(), 0);
+    }
+    #[test]
+    fn test_no_delete_link_project_not_exist() {
+        let mut db = DataPersistence::new();
+        setup(&mut db);
+
+        let project_id = String::from("project1");
+
+        let link_id = String::from("LINK1");
+
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionDeleteLinkProject::new(
+            project_data,
+            &project_id,
+            &link_id
+        );
+
+        let res = ts.execute();
+        drop(ts);
+
+        assert_eq!(res.is_ok(), false);
     }
 }

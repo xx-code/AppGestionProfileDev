@@ -37,6 +37,11 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
         self.db.projects.remove(index);
     }
 
+    fn get_link_project(&mut self, project_id: &String, link_id: &String) -> Option<&Link>{
+        let project = self.get_project(project_id).unwrap();
+        project.get_link(link_id)
+    }
+
     fn create_link_project(&mut self, project_id: &String, link:Link) {
         let index = self.get_index(&self.db.projects,project_id).unwrap();
         self.db.projects[index].add_link(link);

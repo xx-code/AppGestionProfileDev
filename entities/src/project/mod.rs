@@ -55,8 +55,8 @@ impl Project {
             None => { self.date_end = None }
         }
     }
-    pub fn get_link(&self, link_id: &String) -> &Link {
-        &self.links[link_id]
+    pub fn get_link(&self, link_id: &String) -> Option<&Link> {
+        self.links.get(link_id)
     }
     pub fn get_links(&self,) -> Vec<Link> {
         let links = self.links.values().cloned().collect();
