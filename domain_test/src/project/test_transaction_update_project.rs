@@ -14,7 +14,8 @@ mod test {
             TransactionUpdateProjectDescription,
             TransactionUpdateProjectDateStart,
             TransactionUpdateProjectDateEnd,
-            TransactionAddLinkProject
+            TransactionAddLinkProject,
+            TransactionDeleteLinkProject
            }
         }
     };
@@ -216,8 +217,6 @@ mod test {
         let project_id = String::from("project1");
 
         let link_id = String::from("LINK1");
-        let link_title = String::from("Title link");
-        let link_address = String::from("linknks@gmail.com");
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 

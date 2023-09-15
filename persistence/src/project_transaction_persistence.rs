@@ -17,6 +17,7 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
     fn create_project(&mut self, project: Project) {
         self.db.projects.push(project);
     }
+
     fn get_project(&self, project_id: &String) -> Option<&Project> {
         let index = self.get_index(&self.db.projects, project_id);
 
@@ -25,16 +26,24 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
         }
         None
     }
+
     fn update_project(&mut self, project: Project) {
         let index = self.get_index(&self.db.projects, project.get_id()).unwrap();
         self.db.projects[index] = project;
     }
+
     fn delete_project(&mut self, project_id: &String) {
         let index = self.get_index(&self.db.projects, project_id).unwrap();
         self.db.projects.remove(index);
     }
+
     fn create_link_project(&mut self, project_id: &String, link:Link) {
         let index = self.get_index(&self.db.projects,project_id).unwrap();
         self.db.projects[index].add_link(link);
+    }
+
+    fn delete_link_project(&mut self, project_id: &String, link_id: &String) {
+        let index = self.get_index(&self.db.projects, project_id).unwrap();
+        self.db.projects[index].remove_link(link_id);
     }
 }

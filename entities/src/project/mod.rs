@@ -36,6 +36,10 @@ impl Project {
         self.links.insert(link.get_id().clone(), link);
     }
 
+    pub fn remove_link(&mut self, link_id: &String) {
+        self.links.remove(link_id);
+    }
+
     pub fn set_title(&mut self, title: &String) {
         self.title = title.to_owned()
     }

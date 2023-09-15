@@ -164,3 +164,30 @@ impl Transaction for TransactionAddLinkProject<'_> {
         Ok(())
     }
 }
+
+pub struct TransactionDeleteLinkProject<'a> {
+    db: Box<dyn ProjectTransactionRepository + 'a>,
+    project_id: &'a String,
+    link_id: &'a String,
+}
+impl TransactionDeleteLinkProject<'_> {
+    pub fn new<'a>(db: Box<dyn ProjectTransactionRepository + 'a>, project_id: &'a String, link_id: &'a String) -> TransactionDeleteLinkProject<'a> {
+        TransactionDeleteLinkProject { 
+            db, 
+            project_id,
+            link_id,
+        }
+    }
+}
+impl Transaction for TransactionDeleteLinkProject<'_> {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let project = self.db.get_project(self.project_id);
+
+        if project.is_none() {
+            return Err(Box::new(ErrorProject::ProjectNotExist))
+        }
+
+        self.db.delete_link_project(self.project_id, self.link_id);
+        Ok(())
+    }
+}
