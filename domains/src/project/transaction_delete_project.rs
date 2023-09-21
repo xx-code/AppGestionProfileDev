@@ -1,3 +1,5 @@
+use entities::project::Project;
+
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 use crate::{
     transaction::Transaction, 
@@ -18,7 +20,7 @@ impl TransactionDeleteProject<'_> {
     }
 }
 
-impl Transaction for TransactionDeleteProject<'_> {
+impl Transaction<()> for TransactionDeleteProject<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
         

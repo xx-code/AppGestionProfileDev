@@ -1,3 +1,5 @@
+use entities::profile::Profile;
+
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 
@@ -15,7 +17,7 @@ impl TransactionDeleteProfile<'_> {
     }
 }
 
-impl Transaction for TransactionDeleteProfile<'_> {
+impl Transaction<()> for TransactionDeleteProfile<'_> {
     fn execute(&mut self) ->  Result<(), Box<dyn ErrorDomain>> {
         let profile = self.db.get_profile(self.profile_id);
         

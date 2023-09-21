@@ -1,4 +1,4 @@
 use crate::errors::ErrorDomain;
-pub trait Transaction {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>>;
+pub trait Transaction<T>{
+    fn execute(&mut self) -> Result<T, Box<dyn ErrorDomain>>;
 }

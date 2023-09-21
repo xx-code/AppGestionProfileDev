@@ -1,3 +1,4 @@
+use entities::resume::Resume;
 use entities::skill::Skill;
 use crate::{transaction::Transaction, errors::ErrorDomain};
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
@@ -19,7 +20,7 @@ impl TransactionAddSkill<'_> {
         }
     }
 }
-impl Transaction for TransactionAddSkill<'_> {
+impl Transaction<()> for TransactionAddSkill<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill = Skill::new(
             self.skill_id, 

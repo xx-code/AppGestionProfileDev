@@ -22,7 +22,7 @@ impl TransactionCreateCurrentProject<'_> {
     }
 }
 
-impl Transaction for TransactionCreateCurrentProject<'_> {
+impl Transaction<()> for TransactionCreateCurrentProject<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>>{
         let project = Project::new(
             self.project_id,
@@ -58,7 +58,7 @@ impl TransactionCreateCompletProject<'_> {
     }
 }
 
-impl Transaction for TransactionCreateCompletProject<'_> {
+impl Transaction<()>  for TransactionCreateCompletProject<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = Project::new(
             self.project_id,

@@ -1,3 +1,5 @@
+use entities::resume::Resume;
+
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 use crate::{
     transaction::Transaction, 
@@ -18,7 +20,7 @@ impl TransactionDeleteSkill<'_> {
         }
     }
 }
-impl Transaction for TransactionDeleteSkill<'_> {
+impl Transaction<()> for TransactionDeleteSkill<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill = self.db.get_skill(self.skill_id);
 

@@ -25,7 +25,7 @@ impl TransactionCreateProfile<'_> {
     }
 }
 
-impl Transaction for TransactionCreateProfile<'_> {
+impl Transaction<()> for TransactionCreateProfile<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         
         if self.db.is_admin_exist(self.admin_id) {

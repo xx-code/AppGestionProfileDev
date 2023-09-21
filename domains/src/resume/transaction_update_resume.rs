@@ -1,5 +1,5 @@
 use time::Date;
-use entities::resume::ResumeType;
+use entities::resume::{ResumeType, Resume};
 use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionUpdateResumeTitle<'a> {
@@ -16,7 +16,7 @@ impl TransactionUpdateResumeTitle<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateResumeTitle<'_> {
+impl Transaction<()> for TransactionUpdateResumeTitle<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
@@ -44,7 +44,7 @@ impl TransactionUpdateResumeDescription<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateResumeDescription<'_> {
+impl Transaction<()> for TransactionUpdateResumeDescription<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
@@ -72,7 +72,7 @@ impl TransactionUpdateResumeTypeResume<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateResumeTypeResume<'_> {
+impl Transaction<()> for TransactionUpdateResumeTypeResume<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         
@@ -101,7 +101,7 @@ impl TransactionUpdateResumeDateStart<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateResumeDateStart<'_> {
+impl Transaction<()> for TransactionUpdateResumeDateStart<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         
@@ -140,7 +140,7 @@ impl TransactionUpdateResumeDateEnd<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateResumeDateEnd<'_> {
+impl Transaction<()> for TransactionUpdateResumeDateEnd<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume =  self.db.get_resume(self.resume_id);
         

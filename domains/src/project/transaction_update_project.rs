@@ -1,4 +1,4 @@
-use entities::link::Link;
+use entities::{link::Link, project::Project};
 use time::Date;
 use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
@@ -16,7 +16,7 @@ impl TransactionUpdateProjectTitle<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateProjectTitle<'_> {
+impl Transaction<()>  for TransactionUpdateProjectTitle<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
         
@@ -45,7 +45,7 @@ impl TransactionUpdateProjectDescription<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateProjectDescription<'_> {
+impl Transaction<()>  for TransactionUpdateProjectDescription<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
         
@@ -74,7 +74,7 @@ impl TransactionUpdateProjectDateStart<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateProjectDateStart<'_> {
+impl Transaction<()>  for TransactionUpdateProjectDateStart<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
         
@@ -114,7 +114,7 @@ impl TransactionUpdateProjectDateEnd<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateProjectDateEnd<'_> {
+impl Transaction<()>  for TransactionUpdateProjectDateEnd<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
         
@@ -151,7 +151,7 @@ impl TransactionAddLinkProject<'_> {
         }
     }
 }
-impl Transaction for TransactionAddLinkProject<'_> {
+impl Transaction<()>  for TransactionAddLinkProject<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let link = Link::new(self.link_id, self.title, self.address);
         let project = self.db.get_project(self.project_id);
@@ -179,7 +179,7 @@ impl TransactionDeleteLinkProject<'_> {
         }
     }
 }
-impl Transaction for TransactionDeleteLinkProject<'_> {
+impl Transaction<()>  for TransactionDeleteLinkProject<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let project = self.db.get_project(self.project_id);
 

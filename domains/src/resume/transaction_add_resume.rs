@@ -26,7 +26,7 @@ impl TransactionAddResumeCurrent<'_> {
         }
     }
 }
-impl Transaction for TransactionAddResumeCurrent<'_> {
+impl Transaction<()> for TransactionAddResumeCurrent<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume = Resume::new(
             self.resume_id,
@@ -65,7 +65,7 @@ impl TransactionAddResumeComplet<'_> {
         }
     }
 }
-impl Transaction for TransactionAddResumeComplet<'_> {
+impl Transaction<()> for TransactionAddResumeComplet<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         if self.date_start < self.date_end {
             let resume = Resume::new(

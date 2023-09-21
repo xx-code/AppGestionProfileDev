@@ -1,3 +1,5 @@
+use entities::resume::Resume;
+
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 use crate::{
     transaction::Transaction, 
@@ -17,7 +19,7 @@ impl TransactionDeleteResume<'_> {
         }
     }
 }
-impl Transaction for TransactionDeleteResume<'_> {
+impl Transaction<()> for TransactionDeleteResume<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let resume = self.db.get_resume(self.resume_id);
 

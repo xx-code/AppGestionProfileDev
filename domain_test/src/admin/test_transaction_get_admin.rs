@@ -2,12 +2,13 @@
 mod tests {
     use domains::{
         admin::transaction_create_admin::TransactionCreateAdmin,
+        admin::transaction_get_admin::TransactionGetAdmin,
         transaction::Transaction
     };
     use persistence::{
         data_persistence::DataPersistence,
-        admin_transaction_persistence::AdminTransactionPersistence
-    }
+        admin_transaction_persistence::AdminTransactionPersistence,
+    };
     #[test]
     fn test_get_admin_does_exist() {
         let admin_id = String::from("admin1");
@@ -27,7 +28,7 @@ mod tests {
         let _ = new_admin.execute();
         drop(new_admin);
         
-        let admin_data = AdminTransactionPersistence::build(&mut db);
+        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetAdmin::new(
             admin_data,
@@ -35,8 +36,7 @@ mod tests {
         );
 
         let res = ts.execute();
-        let admin = res.unwrap();
-        drop(res);
+        let admin = res.ok().unwrap();
 
         assert_eq!(admin.get_username(), &username);
         assert_eq!(admin.get_password(), &password);

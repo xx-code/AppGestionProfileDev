@@ -1,3 +1,5 @@
+use entities::admin::Admin;
+
 use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
 use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 
@@ -15,7 +17,7 @@ impl TransactionDeleteAdmin<'_>{
     } 
 }
 
-impl Transaction for TransactionDeleteAdmin<'_> {
+impl Transaction<()> for TransactionDeleteAdmin<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>>{
         let admin = self.db.get_admin(self.admin_id);
 

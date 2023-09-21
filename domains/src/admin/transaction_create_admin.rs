@@ -20,7 +20,7 @@ impl TransactionCreateAdmin<'_> {
         }
     }
 }
-impl Transaction for TransactionCreateAdmin<'_> {
+impl Transaction<()> for TransactionCreateAdmin<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let new_admin = Admin::new(
             self.admin_id,

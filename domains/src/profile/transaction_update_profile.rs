@@ -1,3 +1,5 @@
+use entities::profile::Profile;
+
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 
@@ -15,7 +17,7 @@ impl TransactionUpdateFirstnameProfile<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateFirstnameProfile<'_> {
+impl Transaction<()> for TransactionUpdateFirstnameProfile<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
@@ -43,7 +45,7 @@ impl TransactionUpdateLastnameProfile<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateLastnameProfile<'_> {
+impl Transaction<()> for TransactionUpdateLastnameProfile<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
@@ -71,7 +73,7 @@ impl TransactionUpdateEmailAddressProfile<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateEmailAddressProfile<'_> {
+impl Transaction<()> for TransactionUpdateEmailAddressProfile<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {
@@ -99,7 +101,7 @@ impl TransactionUpdatePhoneNumberProfile<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdatePhoneNumberProfile<'_>{
+impl Transaction<()> for TransactionUpdatePhoneNumberProfile<'_>{
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let  profile =  self.db.get_profile(self.profile_id);
         if !profile.is_none() {

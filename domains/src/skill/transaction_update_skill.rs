@@ -1,3 +1,5 @@
+use entities::resume::Resume;
+
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, skill::ErrorSkill}};
 pub struct TransactionUpdateTitleSkill<'a> {
@@ -14,7 +16,7 @@ impl TransactionUpdateTitleSkill<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateTitleSkill<'_> {
+impl Transaction<()> for TransactionUpdateTitleSkill<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
         
@@ -43,7 +45,7 @@ impl TransactionUpdateIsCurrentSkill<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateIsCurrentSkill<'_> {
+impl Transaction<()> for TransactionUpdateIsCurrentSkill<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
         
@@ -72,7 +74,7 @@ impl TransactionUpdateLogoSkill<'_> {
         }
     }
 }
-impl Transaction for TransactionUpdateLogoSkill<'_> {
+impl Transaction<()> for TransactionUpdateLogoSkill<'_> {
     fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
         let skill =  self.db.get_skill(self.skill_id);
         
