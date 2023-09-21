@@ -41,4 +41,20 @@ mod tests {
         assert_eq!(admin.get_username(), &username);
         assert_eq!(admin.get_password(), &password);
     }
+    #[test]
+    fn test_admin_not_exist() {
+        let admin_id = String::from("admin1");
+
+        let mut db = DataPersistence::new();
+        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        
+        let mut ts = TransactionGetAdmin::new(
+            admin_data,
+            &admin_id
+        );
+
+        let res = ts.execute();
+        
+        assert_eq!(res.is_ok(), false);
+    }
 }
