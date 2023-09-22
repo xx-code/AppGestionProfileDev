@@ -5,6 +5,12 @@ mod tests {
         profile_transaction_persistence::ProfileTransactionPersistence,
         admin_transaction_persistence::AdminTransactionPersistence
     };
+    use domains::{
+        transaction::Transaction,
+        admin::transaction_create_admin::TransactionCreateAdmin,
+        profile::transaction_create_profile::TransactionCreateProfile,
+        profile::transaction_get_profile::TransactionGetProfile
+    };
     pub fn setup_admin(db: &mut DataPersistence) {
         let admin_id = String::from("admin_1");
         let username = String::from("usern");
@@ -49,14 +55,14 @@ mod tests {
         setup_admin(&mut db);
         setup_profile(&mut db);
 
-        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetProfile::new(
             profile_data,
             &profile_id
         );
         let res = ts.execute();
-        let profile = res.unwrap();
+        let profile = res.ok().unwrap();
 
         assert_eq!(profile.get_firstname(), &String::from("first"));
         assert_eq!(profile.get_lastname(), &String::from("last"));
@@ -68,7 +74,7 @@ mod tests {
         let profile_id = String::from("profile1");
 
         let mut db = DataPersistence::new();
-        let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_data =  Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetProfile::new(
             profile_data,
