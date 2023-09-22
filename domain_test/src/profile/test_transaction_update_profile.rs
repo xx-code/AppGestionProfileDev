@@ -227,4 +227,24 @@ pub mod test {
         assert_eq!(res.is_ok(), true);
         assert_eq!(links.len(), 0);
     }
+    #[test]
+    fn test_do_not_delete() {
+        let mut db = DataPersistence::new();
+
+        let profile_id = String::from("profile1");
+        let link_id = String::from("LINK1");
+
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionDeleteLinkProfile::new(
+            profile_data,
+            &profile_id,
+            &link_id
+        );
+
+        let res = ts.execute();
+        drop(ts);
+
+        assert_eq!(res.is_ok(), false);
+    }
 }
