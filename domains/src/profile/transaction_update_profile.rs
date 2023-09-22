@@ -1,4 +1,4 @@
-use entities::profile::Profile;
+use entities::link::Link;
 
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
@@ -113,4 +113,41 @@ impl Transaction<()> for TransactionUpdatePhoneNumberProfile<'_>{
             Err(Box::new(ErrorProfile::ProfileNotExist))
         }
     }   
+}
+
+pub struct TransactionAddLinkProfile<'a> {
+    db: Box<dyn ProfileTransactionRepository + 'a>,
+    profile_id: &'a String,
+    link_id: &'a String,
+    link_title: &'a String,
+    link_address: &'a String
+}
+
+impl TransactionAddLinkProfile<'_> {
+    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, link_id: &'a String, link_title: &'a String, link_address: &'a String) -> TransactionAddLinkProfile<'a> {
+        TransactionAddLinkProfile {
+            db,
+            profile_id,
+            link_id,
+            link_title,
+            link_address
+        }
+    }
+
+}
+
+impl Transaction<()> for TransactionAddLinkProfile<'_> {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let link = Link::new(self.link_id, self.link_title, self.link_address);
+
+        let profile = self.db.get_profile(self.profile_id);
+
+        if profile.is_none() {
+            return Err(Box::new(ErrorProfile::ProfileNotExist))
+        }
+
+        self.db.create_link_project(self.profile_id, link);
+
+        Ok(())
+    }
 }

@@ -1,4 +1,7 @@
 use crate::entity::Entity;
+use crate::link::Link;
+use std::collections::HashMap;
+
 #[derive(Debug, Clone)]
 pub struct Profile {
     admin_id: String,
@@ -6,7 +9,8 @@ pub struct Profile {
     firstname: String,
     lastname: String,
     email_address: String,
-    phone_number: String
+    phone_number: String,
+    links: HashMap<String, Link>
 }
 
 impl Entity for Profile {
@@ -23,9 +27,23 @@ impl Profile {
             lastname: lastname.clone(),
             email_address: email_address.clone(),
             phone_number: phone_number.clone(),
+            links: HashMap::new(),
         }
     }
+
+    pub fn add_link(&mut self, link: Link) {
+        self.links.insert(link.get_id().clone(), link);
+    }
     
+    pub fn get_link(&self, link_id: &String) -> Option<&Link> {
+        self.links.get(link_id)
+    }
+    pub fn get_links(&self,) -> Vec<Link> {
+        let links = self.links.values().cloned().collect();
+
+        links
+    }
+
     pub fn set_firstname(&mut self, firstname: &String) {
         self.firstname = firstname.to_owned()
     }

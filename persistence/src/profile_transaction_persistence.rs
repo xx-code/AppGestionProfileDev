@@ -1,5 +1,6 @@
 use domains::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use entities::entity::Entity;
+use entities::link::Link;
 use entities::profile::Profile;
 use crate::data_persistence::{DataPersistence, Indexing};
 
@@ -16,6 +17,14 @@ impl Indexing for ProfileTransactionPersistence<'_>{}
 impl ProfileTransactionRepository for ProfileTransactionPersistence<'_> {
     fn create_profile(&mut self, profile: Profile) {
         self.db.profiles.push(profile)
+    }
+    fn create_link_project(&mut self, profile_id: &String, link: Link) {
+        let index = self.get_index(&self.db.profiles, profile_id).unwrap();
+        self.db.profiles[index].add_link(link);
+    }
+    fn get_link_profile(&mut self, profile_id: &String, link_id: &String)-> Option<&Link> {
+        let index = self.get_index(&self.db.profiles, profile_id).unwrap();
+        self.db.profiles[index].get_link(link_id)
     }
     fn is_admin_exist(&self, admin_id: &String) -> bool {
         let index = self.get_index(&self.db.admins, admin_id);
