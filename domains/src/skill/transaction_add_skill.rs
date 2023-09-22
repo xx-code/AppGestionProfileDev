@@ -1,4 +1,3 @@
-use entities::resume::Resume;
 use entities::skill::Skill;
 use crate::{transaction::Transaction, errors::ErrorDomain};
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;

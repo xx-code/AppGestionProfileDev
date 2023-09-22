@@ -9,7 +9,8 @@ pub mod test {
             TransactionUpdateFirstnameProfile,
             TransactionUpdateLastnameProfile,
             TransactionUpdatePhoneNumberProfile,
-            TransactionAddLinkProfile
+            TransactionAddLinkProfile,
+            TransactionDeleteLinkProfile
         },
         transaction::Transaction,
     };
@@ -184,9 +185,10 @@ pub mod test {
         assert_eq!(links.len(), 1);
     }
     #[test]
-    fn test_to_delete_project_link() {
+    fn test_to_delete_profile_link() {
         let mut db = DataPersistence::new();
-        setup(&mut db);
+        setup_admin(&mut db);
+        setup_profile(&mut db);
 
         let profile_id = String::from("profile1");
 
@@ -209,7 +211,7 @@ pub mod test {
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
-        let mut ts = TransactionDeleteLinkProject::new(
+        let mut ts = TransactionDeleteLinkProfile::new(
             profile_data,
             &profile_id,
             &link_id

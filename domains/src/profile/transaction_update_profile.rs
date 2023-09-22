@@ -141,12 +141,48 @@ impl Transaction<()> for TransactionAddLinkProfile<'_> {
         let link = Link::new(self.link_id, self.link_title, self.link_address);
 
         let profile = self.db.get_profile(self.profile_id);
+        
+        if profile.is_none() {
+            return Err(Box::new(ErrorProfile::ProfileNotExist))
+        }
+
+        self.db.create_link_profile(self.profile_id, link);
+
+        Ok(())
+    }
+}
+
+pub struct TransactionDeleteLinkProfile<'a> {
+    db: Box<dyn ProfileTransactionRepository + 'a>,
+    profile_id: &'a String,
+    link_id: &'a String,
+}
+
+impl TransactionDeleteLinkProfile<'_> {
+    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, link_id: &'a String) -> TransactionDeleteLinkProfile<'a> {
+        TransactionDeleteLinkProfile {
+            db,
+            profile_id,
+            link_id
+        }
+    }
+}
+
+impl Transaction<()> for TransactionDeleteLinkProfile<'_> {
+    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+        let profile = self.db.get_profile(self.profile_id);
 
         if profile.is_none() {
             return Err(Box::new(ErrorProfile::ProfileNotExist))
         }
 
-        self.db.create_link_project(self.profile_id, link);
+        let link = self.db.get_link_profile(self.profile_id, self.link_id);
+
+        if link.is_none() {
+            return Err(Box::new(ErrorProfile::LinkProfileNotExit))
+        }
+
+        self.db.delete_link_profile(self.profile_id, self.link_id);
 
         Ok(())
     }

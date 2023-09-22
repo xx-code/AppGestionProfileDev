@@ -1,5 +1,3 @@
-use entities::project::Project;
-
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 use crate::{
     transaction::Transaction, 

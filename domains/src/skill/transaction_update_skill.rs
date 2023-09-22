@@ -1,5 +1,3 @@
-use entities::resume::Resume;
-
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, skill::ErrorSkill}};
 pub struct TransactionUpdateTitleSkill<'a> {

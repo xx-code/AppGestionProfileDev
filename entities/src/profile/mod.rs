@@ -38,6 +38,11 @@ impl Profile {
     pub fn get_link(&self, link_id: &String) -> Option<&Link> {
         self.links.get(link_id)
     }
+    
+    pub fn remove_link(&mut self, link_id: &String) {
+        self.links.remove(link_id);
+    }
+    
     pub fn get_links(&self,) -> Vec<Link> {
         let links = self.links.values().cloned().collect();
 

@@ -18,9 +18,13 @@ impl ProfileTransactionRepository for ProfileTransactionPersistence<'_> {
     fn create_profile(&mut self, profile: Profile) {
         self.db.profiles.push(profile)
     }
-    fn create_link_project(&mut self, profile_id: &String, link: Link) {
+    fn create_link_profile(&mut self, profile_id: &String, link: Link) {
         let index = self.get_index(&self.db.profiles, profile_id).unwrap();
         self.db.profiles[index].add_link(link);
+    }
+    fn delete_link_profile(&mut self, profile_id: &String, link_id: &String) {
+        let index = self.get_index(&self.db.profiles, profile_id).unwrap();
+        self.db.profiles[index].remove_link(link_id);
     }
     fn get_link_profile(&mut self, profile_id: &String, link_id: &String)-> Option<&Link> {
         let index = self.get_index(&self.db.profiles, profile_id).unwrap();

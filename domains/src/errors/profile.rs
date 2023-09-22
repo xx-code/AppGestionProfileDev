@@ -1,7 +1,8 @@
 use crate::errors::ErrorDomain;
 
 pub enum ErrorProfile {
-    ProfileNotExist
+    ProfileNotExist,
+    LinkProfileNotExit
 }
 
 impl ErrorDomain for ErrorProfile {}

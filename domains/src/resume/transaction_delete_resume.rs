@@ -1,5 +1,3 @@
-use entities::resume::Resume;
-
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 use crate::{
     transaction::Transaction, 
