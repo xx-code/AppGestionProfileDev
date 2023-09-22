@@ -150,5 +150,37 @@ pub mod test {
         
         assert_eq!(profile.get_phone_number(), &new_phone);
     }
+    #[test]
+    fn test_add_link_to_profile() {
+        let mut db = DataPersistence::new();
+        setup_admin(&mut db);
+        setup_profile(&mut db);
 
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&db));
+
+        let link_id = String::from("LINK1");
+        let link_title = String::from("Title link");
+        let link_address = String::from("linknks@gmail.com");
+
+        let profile_id = String::from("profile1");
+        let value = String::from("Link value");
+        let mut ts = TransactionAddLinkProfile::new(
+            profile_data,
+            &profile_id,
+            &link_id,
+            &link_title,
+            &link_address
+        );
+        let _ = ts.execute();
+        drop(ts);
+
+        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+        let profile = profile_data.get_profile(&profile_id);
+        let link = profile.get_link(&link_id).unwrap();
+        let links = profile.get_links();
+
+        assert_eq!(link.get_title(), &link_title);
+        assert_eq!(link.get_address(), &link_address);
+        assert_eq!(links.len(), 1);
+    }
 }
