@@ -1,4 +1,4 @@
-use entities::{link::Link, project::Project};
+use entities::link::Link;
 use time::Date;
 use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;

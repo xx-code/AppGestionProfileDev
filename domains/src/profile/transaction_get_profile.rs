@@ -2,8 +2,7 @@ use entities::profile::Profile;
 
 use crate::{
     repositories::profile_transaction_repository::ProfileTransactionRepository, 
-    transaction::Transaction, 
-    errors::ErrorDomain,
+    transaction::Transaction,
     errors::profile::ErrorProfile
 };
 

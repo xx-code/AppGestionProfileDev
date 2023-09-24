@@ -1,5 +1,3 @@
-use entities::profile::Profile;
-
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 

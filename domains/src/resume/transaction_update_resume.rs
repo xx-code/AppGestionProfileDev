@@ -1,5 +1,5 @@
 use time::Date;
-use entities::resume::{ResumeType, Resume};
+use entities::resume::ResumeType;
 use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionUpdateResumeTitle<'a> {
