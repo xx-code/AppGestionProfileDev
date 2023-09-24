@@ -62,6 +62,10 @@ impl TransactionGetProjectByPage<'_> {
 
 impl Transaction<Vec<Project>> for TransactionGetProjectByPage<'_> {
     fn execute(&mut self) -> Result<Vec<Project>, Box<dyn crate::errors::ErrorDomain>> {
+        
+        if self.page > self.db.get_pages_number(self.content_size) {
+            return Err(Box::new(ErrorProject::PagingNotAllowPageIndexMustBeLessThanPageNumber))
+        }
         let projects = self.db.get_project_by_pages(self.page, self.content_size);
 
         return Ok(projects);

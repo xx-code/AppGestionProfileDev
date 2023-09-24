@@ -179,6 +179,22 @@ mod tests {
         let project = &projects[0];
         let real_id = String::from("project6");
         assert_eq!(project.get_id(), &real_id);
+    }
+    #[test]
+    fn test_not_allow_bad_paging() {
+        let mut db = DataPersistence::new();
+        let project_id = format!("project1");
+        setup(&mut db, &project_id);
+        let page = 13;
+        let content_size = 5;
 
+        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut ts = TransactionGetProjectByPage::new(
+            project_data,
+            page,
+            content_size
+        );
+        let res = ts.execute();
+        assert_eq!(res.is_ok(), false);
     }
 }

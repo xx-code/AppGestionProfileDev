@@ -3,7 +3,8 @@ use crate::errors::ErrorDomain;
 pub enum ErrorProject {
     ProjectNotExist,
     DateEndMustBeSuperiorDateStart,
-    LinkNotExist
+    LinkNotExist,
+    PagingNotAllowPageIndexMustBeLessThanPageNumber
 }
 
 impl ErrorDomain for ErrorProject {}

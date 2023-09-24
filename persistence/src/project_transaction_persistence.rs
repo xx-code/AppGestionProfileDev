@@ -32,7 +32,8 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
     }
 
     fn get_pages_number(&self, content_size: usize) -> usize {
-        let page_numbers =  (self.db.projects.len() / content_size) as f32;
+        let page_numbers =  self.db.projects.len() as f32 / content_size as f32;
+
         page_numbers.ceil() as usize
     }
 
