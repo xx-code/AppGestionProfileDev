@@ -1,3 +1,4 @@
 mod test_transaction_create_project;
 mod test_transaction_update_project;
 mod test_transaction_delete_project;
+mod test_transaction_get_project;

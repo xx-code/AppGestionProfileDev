@@ -27,6 +27,27 @@ impl ProjectTransactionRepository for ProjectTransactionPersistence <'_>{
         None
     }
 
+    fn get_projects(&self,) -> Vec<Project> {
+        return self.db.projects.clone()
+    }
+
+    fn get_pages_number(&self, content_size: usize) -> usize {
+        let page_numbers =  (self.db.projects.len() / content_size) as f32;
+        page_numbers.ceil() as usize
+    }
+
+    fn get_project_by_pages(&self, page: usize, content_size: usize) -> Vec<Project> {
+        let start_idx = (page - 1) * content_size;
+        let mut end_idx = page * content_size;
+
+        if end_idx > self.db.projects.len() {
+            end_idx = self.db.projects.len();
+        }
+
+        let projects = self.db.projects[start_idx..end_idx].to_vec();
+        return projects
+    }
+
     fn update_project(&mut self, project: Project) {
         let index = self.get_index(&self.db.projects, project.get_id()).unwrap();
         self.db.projects[index] = project;
