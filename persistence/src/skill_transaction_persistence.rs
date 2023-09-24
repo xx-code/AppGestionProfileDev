@@ -31,6 +31,9 @@ impl SkillTransactionRepository for SkillTransactionPersistence<'_> {
         }
         None
     }
+    fn get_skills(&self,) -> Vec<Skill> {
+        return self.db.skills.clone()
+    }
     fn delete_skill(&mut self, skill_id: &String) {
         let index = self.get_index( &self.db.skills, skill_id);
 
