@@ -27,6 +27,9 @@ impl ResumeTransactionRepository for ResumeTransactionPersistence<'_> {
         }
         None
     }
+    fn get_resumes(&self,) -> Vec<Resume> {
+        return self.db.resumes.clone()
+    }
     fn update_resume(&mut self, resume: Resume) {
         let index = self.get_index(&self.db.resumes, resume.get_id()).unwrap();
         self.db.resumes[index] = resume;

@@ -10,7 +10,10 @@ mod tests {
         transaction::Transaction,
         resume::{
             transaction_add_resume::TransactionAddResumeCurrent,
-            transaction_get_resume::TransactionGetResume
+            transaction_get_resume::{
+                TransactionGetResume,
+                TransactionGetAllResume
+            },
         }
     };
 
@@ -65,5 +68,37 @@ mod tests {
         let res = ts.execute();
 
         assert_eq!(res.is_ok(), false);
+    }
+    #[test]
+    fn test_get_all_resune() {
+        let mut  db = DataPersistence::new();
+
+        let resume_id = String::from("resume1");
+        let title = String::from("title - element");
+        let description = String::from("description element");
+        let type_resume = ResumeType::Education;
+        let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
+
+        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+
+        let mut ts = TransactionAddResumeCurrent::new(
+            resume_data,
+            &resume_id,
+            &title, 
+            &description, 
+            &type_resume, 
+            &date_start
+        );
+        let _ = ts.execute();
+        drop(ts);
+
+        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut ts = TransactionGetAllResume::new(
+            resume_data,
+        );
+        let res = ts.execute();
+        let resumes = res.ok().unwrap();
+
+        assert_eq!(resumes.len(), 1);
     }
 }
