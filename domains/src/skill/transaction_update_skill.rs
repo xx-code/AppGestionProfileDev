@@ -14,8 +14,8 @@ impl TransactionUpdateTitleSkill<'_> {
         }
     }
 }
-impl Transaction<()> for TransactionUpdateTitleSkill<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorSkill> for TransactionUpdateTitleSkill<'_> {
+    fn execute(&mut self) -> Result<(), ErrorSkill> {
         let skill =  self.db.get_skill(self.skill_id);
         
         if !skill.is_none() {
@@ -24,7 +24,7 @@ impl Transaction<()> for TransactionUpdateTitleSkill<'_> {
             self.db.update_skill(skill);
             Ok(())
         } else {
-            Err(Box::new(ErrorSkill::SkillNotExist))
+            Err(ErrorSkill::SkillNotExist)
         }
     }
 }
@@ -43,8 +43,8 @@ impl TransactionUpdateIsCurrentSkill<'_> {
         }
     }
 }
-impl Transaction<()> for TransactionUpdateIsCurrentSkill<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorSkill> for TransactionUpdateIsCurrentSkill<'_> {
+    fn execute(&mut self) -> Result<(), ErrorSkill> {
         let skill =  self.db.get_skill(self.skill_id);
         
         if !skill.is_none() {
@@ -53,7 +53,7 @@ impl Transaction<()> for TransactionUpdateIsCurrentSkill<'_> {
             self.db.update_skill(skill);
             Ok(())
         } else {
-            Err(Box::new(ErrorSkill::SkillNotExist))
+            Err(ErrorSkill::SkillNotExist)
         }
     }
 }
@@ -72,8 +72,8 @@ impl TransactionUpdateLogoSkill<'_> {
         }
     }
 }
-impl Transaction<()> for TransactionUpdateLogoSkill<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorSkill> for TransactionUpdateLogoSkill<'_> {
+    fn execute(&mut self) -> Result<(), ErrorSkill> {
         let skill =  self.db.get_skill(self.skill_id);
         
         if !skill.is_none() {
@@ -82,7 +82,7 @@ impl Transaction<()> for TransactionUpdateLogoSkill<'_> {
             self.db.update_skill(skill);
             Ok(())
         } else {
-            Err(Box::new(ErrorSkill::SkillNotExist))
+            Err(ErrorSkill::SkillNotExist)
         }
     }
 }

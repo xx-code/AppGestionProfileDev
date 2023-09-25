@@ -6,25 +6,23 @@ use crate::{
 use entities::resume::Resume;
 
 pub struct TransactionGetResume<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
 }
 
 impl TransactionGetResume<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String) -> TransactionGetResume<'a> {
-        TransactionGetResume { 
-            db,
+    pub fn new<'a>(resume_id: &'a String) -> TransactionGetResume<'a> {
+        TransactionGetResume {
             resume_id
         }
     }
 }
 
-impl Transaction<Resume> for TransactionGetResume<'_> {
-    fn execute(&mut self) -> Result<Resume, Box<dyn crate::errors::ErrorDomain>> {
+impl Transaction<Resume, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetResume<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<Resume, ErrorResume> {
         let resume = self.db.get_resume(self.resume_id);
 
         if resume.is_none() {
-            return Err(Box::new(ErrorResume::ResumeNotExist))
+            return Err(ErrorResume::ResumeNotExist)
         }
 
         return Ok(resume.unwrap().clone())
@@ -32,19 +30,17 @@ impl Transaction<Resume> for TransactionGetResume<'_> {
 }
 
 pub struct TransactionGetAllResume<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>
 }
 
 impl TransactionGetAllResume<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>) -> TransactionGetAllResume {
-        TransactionGetAllResume { db }     
+    pub fn new<'a>() -> TransactionGetAllResume<'a> {
+        TransactionGetAllResume { }     
     }
 }
 
-impl Transaction<Vec<Resume>> for TransactionGetAllResume<'_> {
-    fn execute(&mut self) -> Result<Vec<Resume>, Box<dyn crate::errors::ErrorDomain>> {
-        let resumes = self.db.get_resumes();
-
+impl Transaction<Vec<Resume>, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetAllResume<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<Vec<Resume>, ErrorResume> {
+        let resumes = repo.get_resumes();
         return Ok(resumes)
     }
 }

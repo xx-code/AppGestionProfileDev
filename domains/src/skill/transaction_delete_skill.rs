@@ -18,15 +18,15 @@ impl TransactionDeleteSkill<'_> {
         }
     }
 }
-impl Transaction<()> for TransactionDeleteSkill<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorSkill> for TransactionDeleteSkill<'_> {
+    fn execute(&mut self) -> Result<(), ErrorSkill> {
         let skill = self.db.get_skill(self.skill_id);
 
         if !skill.is_none() {
             self.db.delete_skill(self.skill_id);
             Ok(())
         } else {
-            Err(Box::new(ErrorSkill::SkillNotExist))
+            Err(ErrorSkill::SkillNotExist)
         }
     }
 }

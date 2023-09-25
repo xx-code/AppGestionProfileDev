@@ -1,51 +1,51 @@
+use std::borrow::BorrowMut;
+
 use time::Date;
 use entities::resume::ResumeType;
 use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionUpdateResumeTitle<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
     title: &'a String,
 }
 impl TransactionUpdateResumeTitle<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String, title: &'a String) -> TransactionUpdateResumeTitle<'a> {
-        TransactionUpdateResumeTitle { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String, title: &'a String) -> TransactionUpdateResumeTitle<'a> {
+        TransactionUpdateResumeTitle {
             resume_id,
             title
         }
     }
 }
-impl Transaction<()> for TransactionUpdateResumeTitle<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let resume =  self.db.get_resume(self.resume_id);
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionUpdateResumeTitle<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
+        let resume =  repo.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             resume.set_title(self.title);
-            self.db.update_resume(resume);
+            repo.update_resume(resume);
             Ok(())
         } else {
-            Err(Box::new(ErrorResume::ResumeNotExist))
+            Err(ErrorResume::ResumeNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateResumeDescription<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
     description: &'a String,
 }
 impl TransactionUpdateResumeDescription<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String, description: &'a String) -> TransactionUpdateResumeDescription<'a> {
-        TransactionUpdateResumeDescription { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String, description: &'a String) -> TransactionUpdateResumeDescription<'a> {
+        TransactionUpdateResumeDescription {
             resume_id,
             description
         }
     }
 }
-impl Transaction<()> for TransactionUpdateResumeDescription<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionUpdateResumeDescription<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
         let resume =  self.db.get_resume(self.resume_id);
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
@@ -53,108 +53,106 @@ impl Transaction<()> for TransactionUpdateResumeDescription<'_> {
             self.db.update_resume(resume);
             Ok(())
         } else {
-            Err(Box::new(ErrorResume::ResumeNotExist))
+            Err(ErrorResume::ResumeNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateResumeTypeResume<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
     type_resume: &'a ResumeType,
 }
 impl TransactionUpdateResumeTypeResume<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String, type_resume: &'a ResumeType) -> TransactionUpdateResumeTypeResume<'a> {
-        TransactionUpdateResumeTypeResume { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String, type_resume: &'a ResumeType) -> TransactionUpdateResumeTypeResume<'a> {
+        TransactionUpdateResumeTypeResume {
             resume_id,
             type_resume
         }
     }
 }
-impl Transaction<()> for TransactionUpdateResumeTypeResume<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let resume =  self.db.get_resume(self.resume_id);
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionUpdateResumeTypeResume<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
+        let resume = repo.get_resume(self.resume_id);
         
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             resume.set_type_resume(self.type_resume);
-            self.db.update_resume(resume);
+            repo.update_resume(resume);
+
             Ok(())
         } else {
-            Err(Box::new(ErrorResume::ResumeNotExist))
+            Err(ErrorResume::ResumeNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateResumeDateStart<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
     date_start: &'a Date,
 }
 impl TransactionUpdateResumeDateStart<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String, date_start: &'a Date) -> TransactionUpdateResumeDateStart<'a> {
-        TransactionUpdateResumeDateStart { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String, date_start: &'a Date) -> TransactionUpdateResumeDateStart<'a> {
+        TransactionUpdateResumeDateStart {
             resume_id,
             date_start
         }
     }
 }
-impl Transaction<()> for TransactionUpdateResumeDateStart<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let resume =  self.db.get_resume(self.resume_id);
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionUpdateResumeDateStart<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
+        let resume =  repo.get_resume(self.resume_id);
         
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             if !resume.get_date_end().is_none() {
                 if self.date_start < &resume.get_date_end().unwrap() {
                     resume.set_date_start(self.date_start);
-                    self.db.update_resume(resume);
+                    repo.update_resume(resume);
                     return Ok(())
                 } else {
-                    return Err(Box::new(ErrorResume::DateEndMustBeSuperiorDateStart))
+                    return Err(ErrorResume::DateEndMustBeSuperiorDateStart)
                 }
             } else {
                 resume.set_date_start(self.date_start);
-                self.db.update_resume(resume);
+                repo.update_resume(resume);
                 return Ok(())
             }
         } else {
-            return Err(Box::new(ErrorResume::ResumeNotExist))
+            return Err(ErrorResume::ResumeNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateResumeDateEnd<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String,
     date_end: &'a Date,
 }
 impl TransactionUpdateResumeDateEnd<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String, date_end: &'a Date) -> TransactionUpdateResumeDateEnd<'a> {
-        TransactionUpdateResumeDateEnd { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String, date_end: &'a Date) -> TransactionUpdateResumeDateEnd<'a> {
+        TransactionUpdateResumeDateEnd {
             resume_id,
             date_end
         }
     }
 }
-impl Transaction<()> for TransactionUpdateResumeDateEnd<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let resume =  self.db.get_resume(self.resume_id);
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionUpdateResumeDateEnd<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
+        let resume =  repo.get_resume(self.resume_id);
         
         if !resume.is_none() {
             let mut resume = resume.unwrap().clone();
             if self.date_end > &resume.get_date_start() {
                 resume.set_date_end(Some(self.date_end));
-                self.db.update_resume(resume);
+                repo.update_resume(resume);
                 return Ok(())
             } else {
-                return Err(Box::new(ErrorResume::DateEndMustBeSuperiorDateStart))
+                return Err(ErrorResume::DateEndMustBeSuperiorDateStart)
             }
         } else {
-            return Err(Box::new(ErrorResume::ResumeNotExist))
+            return Err(ErrorResume::ResumeNotExist)
         }
     }
 }

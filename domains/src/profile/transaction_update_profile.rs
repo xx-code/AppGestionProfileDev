@@ -1,122 +1,123 @@
+use std::borrow::BorrowMut;
+
 use entities::link::Link;
 
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 use crate::{transaction::Transaction, errors::{ErrorDomain, profile::ErrorProfile}};
 
 pub struct TransactionUpdateFirstnameProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     firstname: &'a String,
 }
 impl TransactionUpdateFirstnameProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, firstname: &'a String) -> TransactionUpdateFirstnameProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, firstname: &'a String) -> TransactionUpdateFirstnameProfile<'a> {
         TransactionUpdateFirstnameProfile {
-            db,
             profile_id, 
             firstname 
         }
     }
 }
-impl Transaction<()> for TransactionUpdateFirstnameProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let profile =  self.db.get_profile(self.profile_id);
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionUpdateFirstnameProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
+        let profile =  repo.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_firstname(self.firstname);
-            self.db.update_profile(profile);
+            repo.update_profile(profile);
+
             Ok(())
         } else {
-            Err(Box::new(ErrorProfile::ProfileNotExist))
+            Err(ErrorProfile::ProfileNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateLastnameProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     lastname: &'a String,
 }
 impl TransactionUpdateLastnameProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, lastname: &'a String) -> TransactionUpdateLastnameProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, lastname: &'a String) -> TransactionUpdateLastnameProfile<'a> {
         TransactionUpdateLastnameProfile {
-            db,
             profile_id, 
             lastname
         }
     }
 }
-impl Transaction<()> for TransactionUpdateLastnameProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let  profile =  self.db.get_profile(self.profile_id);
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionUpdateLastnameProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
+        let  profile =  repo.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_lastname(self.lastname);
-            self.db.update_profile(profile);
+            repo.update_profile(profile);
+            
             Ok(())
         } else {
-            Err(Box::new(ErrorProfile::ProfileNotExist))
+            Err(ErrorProfile::ProfileNotExist)
         }
     }
 }
 
 pub struct TransactionUpdateEmailAddressProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     email_address: &'a String,
 }
 impl TransactionUpdateEmailAddressProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, email_address: &'a String) -> TransactionUpdateEmailAddressProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, email_address: &'a String) -> TransactionUpdateEmailAddressProfile<'a> {
         TransactionUpdateEmailAddressProfile { 
-            db,
             profile_id, 
             email_address
         }
     }
 }
-impl Transaction<()> for TransactionUpdateEmailAddressProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let  profile =  self.db.get_profile(self.profile_id);
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionUpdateEmailAddressProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
+        let  profile =  repo.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_email_address(self.email_address);
-            self.db.update_profile(profile);
+            repo.update_profile(profile);
+
             Ok(())
         } else {
-            Err(Box::new(ErrorProfile::ProfileNotExist))
+            Err(ErrorProfile::ProfileNotExist)
         }
     }
 }
 
 pub struct TransactionUpdatePhoneNumberProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     phone_number: &'a String,
 }
 impl TransactionUpdatePhoneNumberProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, phone_number: &'a String) -> TransactionUpdatePhoneNumberProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, phone_number: &'a String) -> TransactionUpdatePhoneNumberProfile<'a> {
         TransactionUpdatePhoneNumberProfile {
-            db,
             profile_id,
             phone_number
         }
     }
 }
-impl Transaction<()> for TransactionUpdatePhoneNumberProfile<'_>{
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let  profile =  self.db.get_profile(self.profile_id);
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionUpdatePhoneNumberProfile<'_>{
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
+        let  profile =  repo.get_profile(self.profile_id);
         if !profile.is_none() {
             let mut profile = profile.unwrap().clone();
             profile.set_phone_number(self.phone_number);
-            self.db.update_profile(profile);
+            repo.update_profile(profile);
+
             Ok(())
         } else {
-            Err(Box::new(ErrorProfile::ProfileNotExist))
+            Err(ErrorProfile::ProfileNotExist)
         }
     }   
 }
 
 pub struct TransactionAddLinkProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     link_id: &'a String,
     link_title: &'a String,
@@ -124,9 +125,8 @@ pub struct TransactionAddLinkProfile<'a> {
 }
 
 impl TransactionAddLinkProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, link_id: &'a String, link_title: &'a String, link_address: &'a String) -> TransactionAddLinkProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, link_id: &'a String, link_title: &'a String, link_address: &'a String) -> TransactionAddLinkProfile<'a> {
         TransactionAddLinkProfile {
-            db,
             profile_id,
             link_id,
             link_title,
@@ -136,53 +136,46 @@ impl TransactionAddLinkProfile<'_> {
 
 }
 
-impl Transaction<()> for TransactionAddLinkProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionAddLinkProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
         let link = Link::new(self.link_id, self.link_title, self.link_address);
-
-        let profile = self.db.get_profile(self.profile_id);
-        
+        let profile = repo.get_profile(self.profile_id);
         if profile.is_none() {
-            return Err(Box::new(ErrorProfile::ProfileNotExist))
+            return Err(ErrorProfile::ProfileNotExist)
         }
-
-        self.db.create_link_profile(self.profile_id, link);
+        repo.create_link_profile(self.profile_id, link);
 
         Ok(())
     }
 }
 
 pub struct TransactionDeleteLinkProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String,
     link_id: &'a String,
 }
 
 impl TransactionDeleteLinkProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String, link_id: &'a String) -> TransactionDeleteLinkProfile<'a> {
+    pub fn new<'a>(profile_id: &'a String, link_id: &'a String) -> TransactionDeleteLinkProfile<'a> {
         TransactionDeleteLinkProfile {
-            db,
             profile_id,
             link_id
         }
     }
 }
 
-impl Transaction<()> for TransactionDeleteLinkProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let profile = self.db.get_profile(self.profile_id);
-
+impl Transaction<(), ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionDeleteLinkProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<(), ErrorProfile> {
+        let repo = repo.borrow_mut();
+        let profile = repo.get_profile(self.profile_id);
         if profile.is_none() {
-            return Err(Box::new(ErrorProfile::ProfileNotExist))
+            return Err(ErrorProfile::ProfileNotExist)
         }
-
-        let link = self.db.get_link_profile(self.profile_id, self.link_id);
-
+        let link = repo.get_link_profile(self.profile_id, self.link_id);
         if link.is_none() {
-            return Err(Box::new(ErrorProfile::LinkProfileNotExit))
+            return Err(ErrorProfile::LinkProfileNotExit)
         }
-
-        self.db.delete_link_profile(self.profile_id, self.link_id);
+        repo.delete_link_profile(self.profile_id, self.link_id);
 
         Ok(())
     }

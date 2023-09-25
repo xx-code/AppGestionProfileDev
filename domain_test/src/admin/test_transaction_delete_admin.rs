@@ -21,17 +21,16 @@ mod tests {
         let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionCreateAdmin::new(
-            admin_data,
             &admin_id, 
             &username, 
             &password
         );
-        let _ = ts.execute();
+        let _ = ts.execute(admin_data);
         drop(ts);
 
         let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
-        let mut ts = TransactionDeleteAdmin::new(admin_data, &admin_id);
-        let _ = ts.execute();
+        let mut ts = TransactionDeleteAdmin::new( &admin_id);
+        let _ = ts.execute(admin_data);
         drop(ts);
         
         let admin_data = AdminTransactionPersistence::build(&mut db);
@@ -46,8 +45,8 @@ mod tests {
 
         let admin_id = String::from("admin1");
 
-        let mut ts = TransactionDeleteAdmin::new(admin_data, &admin_id);
-        let respone = ts.execute().is_ok();
+        let mut ts = TransactionDeleteAdmin::new(&admin_id);
+        let respone = ts.execute(admin_data).is_ok();
 
         assert_eq!(respone, false);
     }

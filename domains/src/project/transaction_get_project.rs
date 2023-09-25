@@ -4,22 +4,21 @@ use crate::transaction::Transaction;
 use entities::project::Project;
 
 pub struct TransactionGetProject<'a> {
-    db: Box<dyn ProjectTransactionRepository + 'a>,
     project_id: &'a String
 }
 
 impl TransactionGetProject<'_> {
-    pub fn new<'a>(db: Box<dyn ProjectTransactionRepository + 'a>, project_id: &'a String) -> TransactionGetProject<'a> {
-        TransactionGetProject { db, project_id }
+    pub fn new<'a>(project_id: &'a String) -> TransactionGetProject<'a> {
+        TransactionGetProject { project_id }
     }
 }
 
-impl Transaction<Project> for TransactionGetProject<'_> {
-    fn execute(&mut self) -> Result<Project, Box<dyn crate::errors::ErrorDomain>> {
-        let project = self.db.get_project(self.project_id);
+impl Transaction<Project, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProject<'_> {
+    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Project, ErrorProject> {
+        let project = repo.get_project(self.project_id);
 
         if project.is_none() {
-            return Err(Box::new(ErrorProject::ProjectNotExist))
+            return Err(ErrorProject::ProjectNotExist)
         }
 
         return Ok(project.unwrap().clone())
@@ -27,46 +26,43 @@ impl Transaction<Project> for TransactionGetProject<'_> {
 }
 
 pub struct TransactionGetAllProject<'a> {
-    db: Box<dyn ProjectTransactionRepository + 'a>
 }
 
 impl TransactionGetAllProject<'_> {
-    pub fn new<'a>(db: Box<dyn ProjectTransactionRepository + 'a>) -> TransactionGetAllProject<'a> {
-        TransactionGetAllProject { db }
+    pub fn new<'a>() -> TransactionGetAllProject<'a> {
+        TransactionGetAllProject { }
     }
 }
 
-impl Transaction<Vec<Project>> for TransactionGetAllProject<'_> {
-    fn execute(&mut self) -> Result<Vec<Project>, Box<dyn crate::errors::ErrorDomain>> {
-        let projects = self.db.get_projects();
+impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetAllProject<'_> {
+    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
+        let projects = repo.get_projects();
 
         return Ok(projects);
     }
 }
 
 pub struct TransactionGetProjectByPage<'a> {
-    db: Box<dyn ProjectTransactionRepository + 'a>,
     page: usize,
     content_size: usize
 }
 
 impl TransactionGetProjectByPage<'_> {
-    pub fn new<'a>(db: Box<dyn ProjectTransactionRepository + 'a>, page: usize, content_size: usize) -> TransactionGetProjectByPage {
+    pub fn new<'a>(page: usize, content_size: usize) -> TransactionGetProjectByPage<'a> {
         TransactionGetProjectByPage { 
-            db, 
             page, 
             content_size
         }
     }
 }
 
-impl Transaction<Vec<Project>> for TransactionGetProjectByPage<'_> {
-    fn execute(&mut self) -> Result<Vec<Project>, Box<dyn crate::errors::ErrorDomain>> {
+impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProjectByPage<'_> {
+    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
         
-        if self.page > self.db.get_pages_number(self.content_size) {
-            return Err(Box::new(ErrorProject::PagingNotAllowPageIndexMustBeLessThanPageNumber))
+        if self.page > repo.get_pages_number(self.content_size) {
+            return Err(ErrorProject::PagingNotAllowPageIndexMustBeLessThanPageNumber)
         }
-        let projects = self.db.get_project_by_pages(self.page, self.content_size);
+        let projects = repo.get_project_by_pages(self.page, self.content_size);
 
         return Ok(projects);
     }

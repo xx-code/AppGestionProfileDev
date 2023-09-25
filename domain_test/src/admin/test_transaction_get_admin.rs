@@ -19,23 +19,21 @@ mod tests {
         let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut new_admin = TransactionCreateAdmin::new(
-            admin_data,
             &admin_id, 
             &username,
             &password
         );
 
-        let _ = new_admin.execute();
+        let _ = new_admin.execute(admin_data);
         drop(new_admin);
         
         let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetAdmin::new(
-            admin_data,
             &admin_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(admin_data);
         let admin = res.ok().unwrap();
 
         assert_eq!(admin.get_username(), &username);
@@ -49,11 +47,10 @@ mod tests {
         let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
         
         let mut ts = TransactionGetAdmin::new(
-            admin_data,
             &admin_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(admin_data);
         
         assert_eq!(res.is_ok(), false);
     }

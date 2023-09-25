@@ -1,3 +1,5 @@
+use std::borrow::BorrowMut;
+
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 use crate::{
     transaction::Transaction, 
@@ -5,27 +7,26 @@ use crate::{
 };
 
 pub struct TransactionDeleteResume<'a> {
-    db: Box<dyn ResumeTransactionRepository + 'a>,
     resume_id: &'a String
 }
 
 impl TransactionDeleteResume<'_> {
-    pub fn new<'a>(db: Box<dyn ResumeTransactionRepository + 'a>, resume_id: &'a String) -> TransactionDeleteResume<'a> {
-        TransactionDeleteResume { 
-            db, 
+    pub fn new<'a>(resume_id: &'a String) -> TransactionDeleteResume<'a> {
+        TransactionDeleteResume {
             resume_id 
         }
     }
 }
-impl Transaction<()> for TransactionDeleteResume<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
-        let resume = self.db.get_resume(self.resume_id);
+impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionDeleteResume<'_> {
+    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
+        let repo = repo.borrow_mut();
+        let resume = repo.get_resume(self.resume_id);
 
         if !resume.is_none() {
-            self.db.delete_resume(self.resume_id);
+            repo.delete_resume(self.resume_id);
             Ok(())
         } else {
-            Err(Box::new(ErrorResume::ResumeNotExist))
+            Err(ErrorResume::ResumeNotExist)
         }
     }
 }

@@ -4,5 +4,7 @@ members = [
     "domain_test",
     "domains",
     "entities",
-    "persistence",   
+    "persistence",
+    "controllers",
+    "controllers_test"
 ]

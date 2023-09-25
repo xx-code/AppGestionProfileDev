@@ -1,8 +1,9 @@
+use std::borrow::BorrowMut;
+
 use entities::profile::Profile;
-use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
+use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin, profile::ErrorProfile}};
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 pub struct TransactionCreateProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     admin_id: &'a String,
     profile_id: &'a String,
     firstname: &'a String,
@@ -12,9 +13,8 @@ pub struct TransactionCreateProfile<'a> {
 }
 
 impl TransactionCreateProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
+    pub fn new<'a>(admin_id: &'a String, profile_id: &'a String, firstname: &'a String, lastname: &'a String, email_address: &'a String, phone_number: &'a String) -> TransactionCreateProfile<'a> {
         TransactionCreateProfile {
-            db,
             admin_id,
             profile_id, 
             firstname, 
@@ -25,10 +25,12 @@ impl TransactionCreateProfile<'_> {
     }
 }
 
-impl Transaction<()> for TransactionCreateProfile<'_> {
-    fn execute(&mut self) -> Result<(), Box<dyn ErrorDomain>> {
+impl Transaction<(), ErrorAdmin, Box<dyn ProfileTransactionRepository>> for TransactionCreateProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository> ) -> Result<(), ErrorAdmin> {
         
-        if self.db.is_admin_exist(self.admin_id) {
+        let repo = repo.borrow_mut();
+
+        if repo.is_admin_exist(self.admin_id) {
             let profile = Profile::new(
                 self.admin_id,
                 self.profile_id,
@@ -38,10 +40,10 @@ impl Transaction<()> for TransactionCreateProfile<'_> {
                 self.phone_number,
             );
     
-            self.db.create_profile(profile);
+            repo.create_profile(profile);
             return Ok(())
         } else {
-            return Err(Box::new(ErrorAdmin::AdminNoExist))
+            return Err(ErrorAdmin::AdminNoExist)
         }
     }
 }

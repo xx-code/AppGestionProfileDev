@@ -1,4 +1,7 @@
-use crate::errors::ErrorDomain;
-pub trait Transaction<T>{
-    fn execute(&mut self) -> Result<T, Box<dyn ErrorDomain>>;
+use crate::{errors::ErrorDomain, repositories::{admin_transaction_repository::AdminTransactionRepository, profile_transaction_repository::ProfileTransactionRepository, resume_transaction_repository::ResumeTransactionRepository, skill_transaction_repository::SkillTransactionRepository}};
+pub trait Transaction<T, E:ErrorDomain, R> 
+{
+    fn execute(&mut self, repository: R) -> Result<T, E>
+    where 
+        R: AdminTransactionRepository + ProfileTransactionRepository + ResumeTransactionRepository + SkillTransactionRepository; 
 }

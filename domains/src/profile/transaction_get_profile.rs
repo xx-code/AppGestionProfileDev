@@ -7,22 +7,21 @@ use crate::{
 };
 
 pub struct TransactionGetProfile<'a> {
-    db: Box<dyn ProfileTransactionRepository + 'a>,
     profile_id: &'a String
 }
 
 impl TransactionGetProfile<'_> {
-    pub fn new<'a>(db: Box<dyn ProfileTransactionRepository + 'a>, profile_id: &'a String) -> TransactionGetProfile<'a> {
-        TransactionGetProfile { db, profile_id }
+    pub fn new<'a>(profile_id: &'a String) -> TransactionGetProfile<'a> {
+        TransactionGetProfile { profile_id }
     }
 }
 
-impl Transaction<Profile> for TransactionGetProfile<'_> {
-    fn execute(&mut self) -> Result<Profile, Box<dyn crate::errors::ErrorDomain>> {
-        let profile = self.db.get_profile(self.profile_id);
+impl Transaction<Profile, ErrorProfile, Box<dyn ProfileTransactionRepository>> for TransactionGetProfile<'_> {
+    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository>) -> Result<Profile, ErrorProfile> {
+        let profile = repo.get_profile(self.profile_id);
 
         if profile.is_none() {
-            return Err(Box::new(ErrorProfile::ProfileNotExist))
+            return Err(ErrorProfile::ProfileNotExist)
         }
 
         Ok(profile.unwrap().clone())

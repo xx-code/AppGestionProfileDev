@@ -14,12 +14,12 @@ impl TransactionGetSkill<'_> {
     }
 }
 
-impl Transaction<Skill> for TransactionGetSkill<'_> {
-    fn execute(&mut self) -> Result<Skill, Box<dyn ErrorDomain>> {
+impl Transaction<Skill, ErrorSkill> for TransactionGetSkill<'_> {
+    fn execute(&mut self) -> Result<Skill, ErrorSkill> {
         let skill = self.db.get_skill(self.skill_id);
 
         if skill.is_none() {
-            return Err(Box::new(ErrorSkill::SkillNotExist))
+            return Err(ErrorSkill::SkillNotExist)
         }
 
         return Ok(skill.unwrap().clone())
@@ -36,8 +36,8 @@ impl TransactionGetAllSkill<'_> {
     }
 }
 
-impl Transaction<Vec<Skill>> for TransactionGetAllSkill<'_> {
-    fn execute(&mut self) -> Result<Vec<Skill>, Box<dyn ErrorDomain>> {
+impl Transaction<Vec<Skill>, ErrorSkill> for TransactionGetAllSkill<'_> {
+    fn execute(&mut self) -> Result<Vec<Skill>, ErrorSkill> {
         let skills = self.db.get_skills();
 
         return Ok(skills)
