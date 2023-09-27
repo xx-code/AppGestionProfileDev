@@ -1,34 +1,29 @@
 use domains::{
     repositories::admin_transaction_repository::AdminTransactionRepository, 
-    admin::transaction_create_admin::TransactionCreateAdmin, transaction::Transaction
+    admin::transaction_create_admin::TransactionCreateAdmin, errors::admin::ErrorAdmin,
 };
 use json::object::Object;
 use uuid::Uuid;
 use password_hash::PasswordHash;
 
-pub struct AdminController<'a> {
-    db: Box<dyn AdminTransactionRepository + 'a>,
-}
+pub struct AdminController;
 
-impl AdminController<'_> {
-    pub fn new<'a>(db: Box<dyn AdminTransactionRepository + 'a>) -> AdminController {
-        AdminController { db }
+impl AdminController{
+    pub fn new() -> AdminController {
+        AdminController
     }
 }
 
-impl AdminController<'_> {
-    pub fn create_new_admin(&self, request: Object) -> Result<json::JsonValue, json::JsonValue> {
+impl AdminController {
+    pub fn create_new_admin(&self, request: &json::JsonValue, repo: &mut impl AdminTransactionRepository) -> Result<json::JsonValue, json::JsonValue> {
         let admin_id = Uuid::new_v4().to_string();
-
-        let mut username = String::new();
-        let mut password = String::new();
 
         if request["username"].is_null() || request["password"].is_null() {
             let err = json::object! {
                 success: false,
                 error: "bad admin creation request",
                 msg: r#"
-                    structure reqeust is:
+                    structure request is:
                     {
                         username: "username",
                         password: "password"
@@ -39,18 +34,17 @@ impl AdminController<'_> {
             return Err(err)
         }
 
-        username = request["username"].to_string();
-
-        password = PasswordHash::new(&request["password"].as_str().unwrap()).unwrap().to_string();
+        let username = request["username"].to_string();
+        let password = request["password"].to_string();
 
 
         let transaction = TransactionCreateAdmin::new(
-            self.db, 
             &admin_id, 
             &username, 
             &password
         );
-        let res = transaction.execute();
+
+        let res = transaction.execute(repo);
         
         let mut error_response = String::new();
 
@@ -60,6 +54,11 @@ impl AdminController<'_> {
             });
         } else {
             let err = res.err().unwrap();
+
+            match err {
+                ErrorAdmin::AdminAlreadyExist => error_response = format!("Admin already exist"),
+                ErrorAdmin::AdminNoExist => error_response = format!("Admin No Exist")
+            }
             
             return Err(json::object! {
                 success: false,
@@ -67,5 +66,9 @@ impl AdminController<'_> {
                 msg: ""
             })
         }
+    }
+
+    pub fn login_admin(&self, request: &json::JsonValue, repo: &mut impl AdminTransactionRepository) -> Result<json::JsonValue, json::JsonValue>{
+        Ok(json::object! { })
     }
 }
