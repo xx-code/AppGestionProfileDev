@@ -2,7 +2,6 @@
 pub mod tests {
     use entities::resume::ResumeType;
     use domains::{
-        transaction::Transaction,
         repositories::resume_transaction_repository::ResumeTransactionRepository,
         resume::transaction_add_resume::TransactionAddResumeComplet,
         resume::transaction_update_resume::{
@@ -27,8 +26,8 @@ pub mod tests {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
         let date_end = Date::from_calendar_date(2022, time::Month::April, 3).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(db));
-        let mut ts = TransactionAddResumeComplet::new(
+        let mut resume_data = ResumeTransactionPersistence::build(db);
+        let ts = TransactionAddResumeComplet::new(
             &resume_id,
             &title, 
             &description, 
@@ -36,7 +35,7 @@ pub mod tests {
             &date_start,
             &date_end
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
     }
     #[test]
     fn test_update_resume_title() {
@@ -46,12 +45,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_title = String::from("title - new");
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeTitle::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeTitle::new(
             &resume_id,
             &new_title, 
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
         
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -67,12 +66,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_description = String::from("description - new");
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeDescription::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeDescription::new(
             &resume_id,
             &new_description, 
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -87,12 +86,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_type_resume = ResumeType::Job;
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeTypeResume::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeTypeResume::new(
             &resume_id,
             &new_type_resume,
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -107,12 +106,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_date_start = Date::from_calendar_date(2021, time::Month::April, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeDateStart::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeDateStart::new(
             &resume_id,
             &new_date_start, 
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -127,12 +126,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_date_end = Date::from_calendar_date(2022, time::Month::June, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeDateEnd::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeDateEnd::new(
             &resume_id,
             &new_date_end, 
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -148,12 +147,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_date_start = Date::from_calendar_date(2023, time::Month::April, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeDateStart::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeDateStart::new(
             &resume_id,
             &new_date_start, 
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&mut resume_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);
@@ -166,12 +165,12 @@ pub mod tests {
         let resume_id = String::from("resume1");
         let new_date_end = Date::from_calendar_date(2019, time::Month::April, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateResumeDateEnd::new(
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateResumeDateEnd::new(
             &resume_id,
             &new_date_end, 
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&mut resume_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

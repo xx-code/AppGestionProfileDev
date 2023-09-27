@@ -7,7 +7,6 @@ mod test {
     use time::Date;
     use domains::{
         repositories::project_transaction_repository::ProjectTransactionRepository,
-        transaction::Transaction,
         project::transaction_create_project::{
             TransactionCreateCurrentProject,
             TransactionCreateCompletProject
@@ -21,15 +20,15 @@ mod test {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 3).unwrap();
 
         let mut db = DataPersistence::new();
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut transaction = TransactionCreateCurrentProject::new(
+        let transaction = TransactionCreateCurrentProject::new(
             &project_id,
             &title,
             &description,
             &date_start
         );
-        let _ = transaction.execute(project_data);
+        let _ = transaction.execute(&mut project_data);
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -49,16 +48,16 @@ mod test {
         let date_end = Date::from_calendar_date(2022, time::Month::January, 4).unwrap();
 
         let mut db = DataPersistence::new();
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut transaction = TransactionCreateCompletProject::new(
+        let transaction = TransactionCreateCompletProject::new(
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = transaction.execute(project_data);
+        let _ = transaction.execute(&mut project_data);
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));

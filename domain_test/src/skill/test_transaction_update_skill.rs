@@ -7,7 +7,6 @@
     };
     use domains::{
         repositories::skill_transaction_repository::SkillTransactionRepository,
-        transaction::Transaction,
         skill::{
             transaction_add_skill::TransactionAddSkill,
             transaction_update_skill::{
@@ -25,14 +24,14 @@
         let is_current = false;
         let logo = String::from("logo");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(db));
-        let mut ts = TransactionAddSkill::new(
+        let mut skill_data = SkillTransactionPersistence::build(db);
+        let ts = TransactionAddSkill::new(
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
     }
 
     #[test]
@@ -45,12 +44,12 @@
 
         let new_title = String::from("new title");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateTitleSkill::new(
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateTitleSkill::new(
             &skill_id, 
             &new_title,
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -68,12 +67,12 @@
 
         let new_logo = String::from("new logo");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateLogoSkill::new(
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateLogoSkill::new(
             &skill_id, 
             &new_logo,
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -92,12 +91,12 @@
 
         let is_current = true;
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
-        let mut ts = TransactionUpdateIsCurrentSkill::new(
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
+        let ts = TransactionUpdateIsCurrentSkill::new(
             &skill_id, 
             is_current,
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);

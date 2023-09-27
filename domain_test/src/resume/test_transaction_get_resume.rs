@@ -6,15 +6,12 @@ mod tests {
     };
     use time::Date;
     use entities::resume::ResumeType;
-    use domains::{
-        transaction::Transaction,
-        resume::{
-            transaction_add_resume::TransactionAddResumeCurrent,
-            transaction_get_resume::{
-                TransactionGetResume,
-                TransactionGetAllResume
-            },
-        }
+    use domains::resume::{
+        transaction_add_resume::TransactionAddResumeCurrent,
+        transaction_get_resume::{
+            TransactionGetResume,
+            TransactionGetAllResume
+        },
     };
 
     #[test]
@@ -27,24 +24,24 @@ mod tests {
         let type_resume = ResumeType::Education;
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddResumeCurrent::new(
+        let ts = TransactionAddResumeCurrent::new(
             &resume_id,
             &title, 
             &description, 
             &type_resume, 
             &date_start
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionGetResume::new(
+        let ts = TransactionGetResume::new(
             &resume_id,
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&mut resume_data);
         let resume = res.ok().unwrap();
 
         assert_eq!(&title, resume.get_title());
@@ -56,13 +53,13 @@ mod tests {
     fn test_get_no_resume() {
         let mut db = DataPersistence::new();
         
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
         let resume_id = String::from("resume1");
 
-        let mut ts = TransactionGetResume::new(
+        let ts = TransactionGetResume::new(
             &resume_id,
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&resume_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -76,22 +73,22 @@ mod tests {
         let type_resume = ResumeType::Education;
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddResumeCurrent::new(
+        let ts = TransactionAddResumeCurrent::new(
             &resume_id,
             &title, 
             &description, 
             &type_resume, 
             &date_start
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetAllResume::new(
+        let resume_data = ResumeTransactionPersistence::build(&mut db);
+        let ts = TransactionGetAllResume::new(
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&resume_data);
         let resumes = res.ok().unwrap();
 
         assert_eq!(resumes.len(), 1);

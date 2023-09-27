@@ -4,16 +4,13 @@ mod tests {
         data_persistence::DataPersistence, 
         project_transaction_persistence::ProjectTransactionPersistence
     };
-    use domains::{
-        transaction::Transaction,
-        project::{
-            transaction_create_project::TransactionCreateCompletProject,
-            transaction_get_project::{
-                TransactionGetProject,
-                TransactionGetAllProject,
-                TransactionGetProjectByPage
-            },
-        }
+    use domains::project::{
+        transaction_create_project::TransactionCreateCompletProject,
+        transaction_get_project::{
+            TransactionGetProject,
+            TransactionGetAllProject,
+            TransactionGetProjectByPage
+        },
     };
     use entities::entity::Entity;
     use time::Date;
@@ -24,16 +21,16 @@ mod tests {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 3).unwrap();
         let date_end = Date::from_calendar_date(2022, time::Month::January, 4).unwrap();
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(db));
+        let mut project_data = ProjectTransactionPersistence::build(db);
 
-        let mut transaction = TransactionCreateCompletProject::new(
+        let transaction = TransactionCreateCompletProject::new(
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = transaction.execute(project_data);
+        let _ = transaction.execute(&mut project_data);
         drop(transaction);
     }
     #[test]
@@ -46,22 +43,22 @@ mod tests {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 3).unwrap();
         let date_end = Date::from_calendar_date(2022, time::Month::January, 4).unwrap();
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionCreateCompletProject::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionCreateCompletProject::new(
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProject::new(
+        let  project_data =ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProject::new(
             &project_id
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&project_data);
         let project = res.ok().unwrap();
 
         assert_eq!(project.get_title(), &title);
@@ -74,11 +71,11 @@ mod tests {
         let mut db = DataPersistence::new();
         let project_id = String::from("project1");
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProject::new(
+        let project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProject::new(
             &project_id
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&project_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -93,11 +90,11 @@ mod tests {
         let project_id3 = String::from("project3");
         setup(&mut db, &project_id3);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetAllProject::new(
+        let project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetAllProject::new(
 
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 3);
@@ -114,12 +111,12 @@ mod tests {
         let page = 1;
         let content_size = 5;
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProjectByPage::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProjectByPage::new(
             page,
             content_size
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 5);
@@ -129,12 +126,12 @@ mod tests {
         drop(ts);
 
         let page = 2;
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProjectByPage::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProjectByPage::new(
             page,
             content_size
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         let projects = res.ok().unwrap();
 
         let project = &projects[0];
@@ -143,12 +140,12 @@ mod tests {
         drop(ts);
 
         let content_size = 7;
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProjectByPage::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProjectByPage::new(
             page,
             content_size
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 3);
@@ -160,12 +157,12 @@ mod tests {
         let page = 3;
         let content_size = 3;
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProjectByPage::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProjectByPage::new(
             page,
             content_size
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         let projects = res.ok().unwrap();
 
         let project = &projects[0];
@@ -180,12 +177,12 @@ mod tests {
         let page = 13;
         let content_size = 5;
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut ts = TransactionGetProjectByPage::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let ts = TransactionGetProjectByPage::new(
             page,
             content_size
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         assert_eq!(res.is_ok(), false);
     }
 }

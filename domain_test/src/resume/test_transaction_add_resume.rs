@@ -2,7 +2,6 @@
 mod tests {
     use entities::resume::ResumeType;
     use domains::{
-        transaction::Transaction,
         repositories::resume_transaction_repository::ResumeTransactionRepository,
         resume::transaction_add_resume::{
             TransactionAddResumeComplet,
@@ -25,16 +24,16 @@ mod tests {
         let type_resume = ResumeType::Education;
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddResumeCurrent::new(
+        let ts = TransactionAddResumeCurrent::new(
             &resume_id,
             &title, 
             &description, 
             &type_resume, 
             &date_start
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
         
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -55,9 +54,9 @@ mod tests {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
         let date_end = Date::from_calendar_date(2022, time::Month::April, 3).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data =ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddResumeComplet::new(
+        let ts = TransactionAddResumeComplet::new(
             &resume_id,
             &title, 
             &description, 
@@ -65,7 +64,7 @@ mod tests {
             &date_start,
             &date_end
         );
-        let _ = ts.execute(resume_data);
+        let _ = ts.execute(&mut resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -87,9 +86,9 @@ mod tests {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 1).unwrap();
         let date_end = Date::from_calendar_date(2020, time::Month::April, 3).unwrap();
 
-        let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
+        let mut resume_data = ResumeTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddResumeComplet::new(
+        let ts = TransactionAddResumeComplet::new(
             &resume_id,
             &title, 
             &description, 
@@ -97,7 +96,7 @@ mod tests {
             &date_start,
             &date_end
         );
-        let res = ts.execute(resume_data);
+        let res = ts.execute(&mut resume_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

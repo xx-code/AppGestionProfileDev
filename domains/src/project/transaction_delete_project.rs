@@ -1,10 +1,5 @@
-use std::borrow::BorrowMut;
-
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
-use crate::{
-    transaction::Transaction, 
-    errors::{ErrorDomain, project::ErrorProject}
-};
+use crate::errors::project::ErrorProject;
 
 pub struct TransactionDeleteProject<'a> {
     project_id: &'a String
@@ -16,12 +11,8 @@ impl TransactionDeleteProject<'_> {
             project_id
         }
     }
-}
 
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionDeleteProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
-        
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
@@ -30,6 +21,5 @@ impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>> for Tr
         } else {
             Err(ErrorProject::ProjectNotExist)
         }
-        
     }
 }

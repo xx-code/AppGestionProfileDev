@@ -4,15 +4,12 @@ mod tests {
         data_persistence::DataPersistence, 
         skill_transaction_persistence::SkillTransactionPersistence
     };
-    use domains::{
-        transaction::Transaction,
-        skill::{
-            transaction_add_skill::TransactionAddSkill,
-            transaction_get_skill::{
-                TransactionGetSkill,
-                TransactionGetAllSkill
-            },
-        }
+    use domains::skill::{
+        transaction_add_skill::TransactionAddSkill,
+        transaction_get_skill::{
+            TransactionGetSkill,
+            TransactionGetAllSkill
+        },
     };
 
     #[test]
@@ -24,23 +21,23 @@ mod tests {
         let is_current = false;
         let logo = String::from("logo");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddSkill::new(
+        let ts = TransactionAddSkill::new(
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionGetSkill::new(
+        let ts = TransactionGetSkill::new(
             &skill_id
         );
-        let res = ts.execute(skill_data);
+        let res = ts.execute(&mut skill_data);
         let skill = res.ok().unwrap();
 
         assert_eq!(skill.get_title(), &title);
@@ -52,12 +49,12 @@ mod tests {
         let mut db = DataPersistence::new();
         let skill_id = String::from("Skill1");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionGetSkill::new(
+        let ts = TransactionGetSkill::new(
             &skill_id
         );
-        let res = ts.execute(skill_data);
+        let res = ts.execute(&mut skill_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -70,21 +67,21 @@ mod tests {
         let is_current = false;
         let logo = String::from("logo");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddSkill::new(
+        let ts = TransactionAddSkill::new(
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
-        let mut res = TransactionGetAllSkill::new(
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
+        let res = TransactionGetAllSkill::new(
         );
-        let res = res.execute(skill_data);
+        let res = res.execute(&mut skill_data);
         let resumes = res.ok().unwrap();
 
         assert_eq!(resumes.len(), 1);

@@ -1,8 +1,5 @@
-use std::borrow::BorrowMut;
-
 use entities::skill::Skill;
 use crate::errors::skill::ErrorSkill;
-use crate::{transaction::Transaction, errors::ErrorDomain};
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
 pub struct TransactionAddSkill<'a> {
     skill_id: &'a String,
@@ -19,10 +16,8 @@ impl TransactionAddSkill<'_> {
             logo 
         }
     }
-}
-impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for TransactionAddSkill<'_> {
-    fn execute(&mut self, repo: Box<dyn SkillTransactionRepository>) -> Result<(), ErrorSkill> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl SkillTransactionRepository) -> Result<(), ErrorSkill> {
         let skill = Skill::new(
             self.skill_id, 
             self.title, 

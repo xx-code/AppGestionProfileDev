@@ -2,7 +2,6 @@
 mod tests {
     use domains::{
         repositories::admin_transaction_repository::AdminTransactionRepository,
-        transaction::Transaction,
         admin::transaction_create_admin::TransactionCreateAdmin,
         admin::transaction_delete_admin::TransactionDeleteAdmin
     };
@@ -18,19 +17,19 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionCreateAdmin::new(
+        let ts = TransactionCreateAdmin::new(
             &admin_id, 
             &username, 
             &password
         );
-        let _ = ts.execute(admin_data);
+        let _ = ts.execute(&mut admin_data);
         drop(ts);
 
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
-        let mut ts = TransactionDeleteAdmin::new( &admin_id);
-        let _ = ts.execute(admin_data);
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let ts = TransactionDeleteAdmin::new( &admin_id);
+        let _ = ts.execute(&mut admin_data);
         drop(ts);
         
         let admin_data = AdminTransactionPersistence::build(&mut db);
@@ -41,12 +40,12 @@ mod tests {
     #[test]
     fn test_no_allow_delete_admin_no_exist() {
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
         let admin_id = String::from("admin1");
 
-        let mut ts = TransactionDeleteAdmin::new(&admin_id);
-        let respone = ts.execute(admin_data).is_ok();
+        let ts = TransactionDeleteAdmin::new(&admin_id);
+        let respone = ts.execute(&mut admin_data).is_ok();
 
         assert_eq!(respone, false);
     }

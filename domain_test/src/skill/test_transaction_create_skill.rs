@@ -6,7 +6,6 @@ mod tests {
     };
     use domains::{
         repositories::skill_transaction_repository::SkillTransactionRepository,
-        transaction::Transaction,
         skill::transaction_add_skill::TransactionAddSkill
     };
 
@@ -19,15 +18,15 @@ mod tests {
         let is_current = false;
         let logo = String::from("logo");
 
-        let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
+        let mut skill_data = SkillTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddSkill::new(
+        let ts = TransactionAddSkill::new(
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute(skill_data);
+        let _ = ts.execute(&mut skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);

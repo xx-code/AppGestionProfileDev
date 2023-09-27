@@ -1,11 +1,9 @@
-use std::borrow::BorrowMut;
-
 use time::Date;
 use entities::resume::{
     Resume,
     ResumeType
 };
-use crate::{transaction::Transaction, errors::{ErrorDomain, resume::ErrorResume}};
+use crate:: errors::resume::ErrorResume;
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
 pub struct TransactionAddResumeCurrent<'a> {
     resume_id: &'a String,
@@ -24,10 +22,8 @@ impl TransactionAddResumeCurrent<'_> {
             date_start 
         }
     }
-}
-impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionAddResumeCurrent<'_> {
-    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ResumeTransactionRepository) -> Result<(), ErrorResume> {
         let resume = Resume::new(
             self.resume_id,
             self.title,
@@ -61,10 +57,8 @@ impl TransactionAddResumeComplet<'_> {
             date_end
         }
     }
-}
-impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionAddResumeComplet<'_> {
-    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ResumeTransactionRepository) -> Result<(), ErrorResume> {
         if self.date_start < self.date_end {
             let resume = Resume::new(
                 self.resume_id,
@@ -80,6 +74,5 @@ impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for Tran
         } else {
             Err(ErrorResume::DateEndMustBeSuperiorDateStart)
         }
-        
     }
 }

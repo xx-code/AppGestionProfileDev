@@ -1,7 +1,5 @@
-use std::borrow::BorrowMut;
-
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
-use crate::{transaction::Transaction, errors::{ErrorDomain, skill::ErrorSkill}};
+use crate::errors::skill::ErrorSkill;
 pub struct TransactionUpdateTitleSkill<'a> {
     skill_id: &'a String,
     title: &'a String
@@ -13,10 +11,8 @@ impl TransactionUpdateTitleSkill<'_> {
             title
         }
     }
-}
-impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for TransactionUpdateTitleSkill<'_> {
-    fn execute(&mut self, repo: Box<dyn SkillTransactionRepository>) -> Result<(), ErrorSkill> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl SkillTransactionRepository) -> Result<(), ErrorSkill> {
         let skill =  repo.get_skill(self.skill_id);
         
         if !skill.is_none() {
@@ -41,10 +37,8 @@ impl TransactionUpdateIsCurrentSkill<'_> {
             is_current
         }
     }
-}
-impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for TransactionUpdateIsCurrentSkill<'_> {
-    fn execute(&mut self, repo: Box<dyn SkillTransactionRepository>) -> Result<(), ErrorSkill> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl SkillTransactionRepository) -> Result<(), ErrorSkill> {
         let skill = repo.get_skill(self.skill_id);
         
         if !skill.is_none() {
@@ -58,6 +52,7 @@ impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for Transa
     }
 }
 
+
 pub struct TransactionUpdateLogoSkill<'a> {
     skill_id: &'a String,
     logo: &'a String
@@ -69,10 +64,8 @@ impl TransactionUpdateLogoSkill<'_> {
             logo
         }
     }
-}
-impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for TransactionUpdateLogoSkill<'_> {
-    fn execute(&mut self, repo: Box<dyn SkillTransactionRepository>) -> Result<(), ErrorSkill> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl SkillTransactionRepository) -> Result<(), ErrorSkill> {
         let skill =  repo.get_skill(self.skill_id);
         
         if !skill.is_none() {

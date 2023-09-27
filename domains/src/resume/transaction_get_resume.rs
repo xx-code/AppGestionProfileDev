@@ -1,6 +1,5 @@
 use crate::{
     repositories::resume_transaction_repository::ResumeTransactionRepository, 
-    transaction::Transaction, 
     errors::resume::ErrorResume
 };
 use entities::resume::Resume;
@@ -15,11 +14,9 @@ impl TransactionGetResume<'_> {
             resume_id
         }
     }
-}
 
-impl Transaction<Resume, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetResume<'_> {
-    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<Resume, ErrorResume> {
-        let resume = self.db.get_resume(self.resume_id);
+    pub fn execute(&self, repo: &impl ResumeTransactionRepository) -> Result<Resume, ErrorResume> {
+        let resume = repo.get_resume(self.resume_id);
 
         if resume.is_none() {
             return Err(ErrorResume::ResumeNotExist)
@@ -36,10 +33,8 @@ impl TransactionGetAllResume {
     pub fn new() -> TransactionGetAllResume {
         TransactionGetAllResume { }     
     }
-}
 
-impl Transaction<Vec<Resume>, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetAllResume {
-    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<Vec<Resume>, ErrorResume> {
+    pub fn execute(&self, repo: &impl ResumeTransactionRepository) -> Result<Vec<Resume>, ErrorResume> {
         let resumes = repo.get_resumes();
         return Ok(resumes)
     }

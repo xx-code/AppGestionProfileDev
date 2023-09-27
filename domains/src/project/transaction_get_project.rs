@@ -1,6 +1,5 @@
 use crate::errors::project::ErrorProject;
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
-use crate::transaction::Transaction;
 use entities::project::Project;
 
 pub struct TransactionGetProject<'a> {
@@ -11,10 +10,8 @@ impl TransactionGetProject<'_> {
     pub fn new<'a>(project_id: &'a String) -> TransactionGetProject<'a> {
         TransactionGetProject { project_id }
     }
-}
 
-impl Transaction<Project, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Project, ErrorProject> {
+    pub fn execute(&self, repo: &impl ProjectTransactionRepository) -> Result<Project, ErrorProject> {
         let project = repo.get_project(self.project_id);
 
         if project.is_none() {
@@ -32,10 +29,8 @@ impl TransactionGetAllProject {
     pub fn new() -> TransactionGetAllProject {
         TransactionGetAllProject { }
     }
-}
 
-impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetAllProject {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
+    pub fn execute(&self, repo: &impl ProjectTransactionRepository) -> Result<Vec<Project>, ErrorProject> {
         let projects = repo.get_projects();
 
         return Ok(projects);
@@ -54,11 +49,8 @@ impl TransactionGetProjectByPage {
             content_size
         }
     }
-}
 
-impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProjectByPage {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
-        
+    pub fn execute(&self, repo: &impl ProjectTransactionRepository) -> Result<Vec<Project>, ErrorProject> {
         if self.page > repo.get_pages_number(self.content_size) {
             return Err(ErrorProject::PagingNotAllowPageIndexMustBeLessThanPageNumber)
         }

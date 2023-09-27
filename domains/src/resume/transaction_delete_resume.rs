@@ -1,10 +1,5 @@
-use std::borrow::BorrowMut;
-
 use crate::repositories::resume_transaction_repository::ResumeTransactionRepository;
-use crate::{
-    transaction::Transaction, 
-    errors::{ErrorDomain, resume::ErrorResume}
-};
+use crate::errors::resume::ErrorResume;
 
 pub struct TransactionDeleteResume<'a> {
     resume_id: &'a String
@@ -16,10 +11,8 @@ impl TransactionDeleteResume<'_> {
             resume_id 
         }
     }
-}
-impl Transaction<(), ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionDeleteResume<'_> {
-    fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<(), ErrorResume> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ResumeTransactionRepository) -> Result<(), ErrorResume> {
         let resume = repo.get_resume(self.resume_id);
 
         if !resume.is_none() {

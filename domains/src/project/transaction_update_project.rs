@@ -1,8 +1,6 @@
-use std::borrow::BorrowMut;
-
 use entities::link::Link;
 use time::Date;
-use crate::{transaction::Transaction, errors::{ErrorDomain, project::ErrorProject}};
+use crate::errors::project::ErrorProject;
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 pub struct TransactionUpdateProjectTitle<'a> {
     project_id: &'a String,
@@ -15,10 +13,8 @@ impl TransactionUpdateProjectTitle<'_> {
             title 
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionUpdateProjectTitle<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
@@ -43,10 +39,8 @@ impl TransactionUpdateProjectDescription<'_> {
             description 
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionUpdateProjectDescription<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
@@ -71,10 +65,8 @@ impl TransactionUpdateProjectDateStart<'_> {
             date_start 
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionUpdateProjectDateStart<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
@@ -98,7 +90,6 @@ impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for T
         }
     }
 }
-
 pub struct TransactionUpdateProjectDateEnd<'a> {
     project_id: &'a String,
     date_end: &'a Date,
@@ -110,10 +101,8 @@ impl TransactionUpdateProjectDateEnd<'_> {
             date_end 
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionUpdateProjectDateEnd<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
@@ -146,10 +135,8 @@ impl TransactionAddLinkProject<'_> {
             address 
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionAddLinkProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let link = Link::new(self.link_id, self.title, self.address);
         let project = repo.get_project(self.project_id);
 
@@ -173,10 +160,8 @@ impl TransactionDeleteLinkProject<'_> {
             link_id,
         }
     }
-}
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionDeleteLinkProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = repo.get_project(self.project_id);
 
         if project.is_none() {

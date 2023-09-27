@@ -3,8 +3,7 @@ pub mod tests {
     use domains::{
         repositories::profile_transaction_repository::ProfileTransactionRepository,
         admin::transaction_create_admin::TransactionCreateAdmin,
-        profile::transaction_create_profile::TransactionCreateProfile,
-        transaction::Transaction,
+        profile::transaction_create_profile::TransactionCreateProfile
     };
     use persistence::{
         data_persistence::DataPersistence,
@@ -26,19 +25,19 @@ pub mod tests {
         let phone_number = String::from("07056389");
 
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db) );
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionCreateAdmin::new(
+        let ts = TransactionCreateAdmin::new(
             &admin_id,
             &username,
             &password,
         );
-        let _ = ts.execute(admin_data);
+        let _ = ts.execute(&mut admin_data);
         drop(ts);
 
-        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionCreateProfile::new(
+        let ts = TransactionCreateProfile::new(
             &admin_id,
             &profile_id,
             &firstname,
@@ -46,7 +45,7 @@ pub mod tests {
             &email_address,
             &phone_number,
         );
-        let _ = ts.execute(profile_data);
+        let _ = ts.execute(&mut profile_data);
         drop(ts);
         
 
@@ -71,9 +70,9 @@ pub mod tests {
 
         let mut db = DataPersistence::new();
 
-        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+        let mut profile_data = ProfileTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionCreateProfile::new(
+        let ts = TransactionCreateProfile::new(
             &admin_id,
             &profile_id,
             &firstname,
@@ -81,7 +80,7 @@ pub mod tests {
             &email_address,
             &phone_number,
         );
-        let res = ts.execute(profile_data);
+        let res = ts.execute(&mut profile_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

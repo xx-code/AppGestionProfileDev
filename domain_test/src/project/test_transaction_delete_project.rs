@@ -6,7 +6,6 @@ mod test {
      };
      use domains::{
         repositories::project_transaction_repository::ProjectTransactionRepository,
-        transaction::Transaction,
         project::{
             transaction_create_project::TransactionCreateCurrentProject,
             transaction_delete_project::TransactionDeleteProject,
@@ -21,25 +20,25 @@ mod test {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 3).unwrap();
 
         let mut db = DataPersistence::new();
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut transaction = TransactionCreateCurrentProject::new(
+        let transaction = TransactionCreateCurrentProject::new(
             &project_id,
             &title,
             &description,
             &date_start
         );
-        let _ =transaction.execute(project_data);
+        let _ =transaction.execute(&mut project_data);
         drop(transaction);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut transaction = TransactionDeleteProject::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let transaction = TransactionDeleteProject::new(
             &project_id,
         );
-        let _ = transaction.execute(project_data);
+        let _ = transaction.execute(&mut project_data);
         drop(transaction);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id);
 
         assert!(project.is_none())
@@ -50,11 +49,11 @@ mod test {
         let project_id = String::from("project1");
 
         let mut db = DataPersistence::new();
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
-        let mut transaction = TransactionDeleteProject::new(
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
+        let transaction = TransactionDeleteProject::new(
             &project_id,
         );
-        let res = transaction.execute(project_data);
+        let res = transaction.execute(&mut project_data);
         drop(transaction);
 
         assert_eq!(res.is_ok(), false);

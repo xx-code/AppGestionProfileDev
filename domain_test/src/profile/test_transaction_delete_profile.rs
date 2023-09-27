@@ -2,8 +2,7 @@
 mod test {
     use domains::{
         repositories::profile_transaction_repository::ProfileTransactionRepository,
-        profile::transaction_delete_profile::TransactionDeleteProfile,
-        transaction::Transaction,
+        profile::transaction_delete_profile::TransactionDeleteProfile
     };
     use persistence::{
         data_persistence::DataPersistence,
@@ -15,11 +14,11 @@ mod test {
     fn test_delete_profile() {
         let mut db = DataPersistence::new();
         setup_profile(&mut db);
-        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+        let mut  profile_data = ProfileTransactionPersistence::build(&mut db);
 
         let profile_id = String::from("profile1");
-        let mut ts = TransactionDeleteProfile::new(&profile_id);
-        let _ = ts.execute(profile_data);
+        let ts = TransactionDeleteProfile::new(&profile_id);
+        let _ = ts.execute(&mut profile_data);
 
         drop(ts);
 
@@ -31,11 +30,11 @@ mod test {
     #[test]
     fn no_delete_test_profile_not_exist() {
         let mut db = DataPersistence::new();
-        let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
+        let mut profile_data =ProfileTransactionPersistence::build(&mut db);
 
         let profile_id = String::from("profile1");
-        let mut ts = TransactionDeleteProfile::new(&profile_id);
-        let res = ts.execute(profile_data);
+        let ts = TransactionDeleteProfile::new(&profile_id);
+        let res = ts.execute(&mut profile_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false)

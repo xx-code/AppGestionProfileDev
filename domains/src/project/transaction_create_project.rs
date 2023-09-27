@@ -1,9 +1,6 @@
-use std::borrow::BorrowMut;
-
 use entities::project::Project;
 use time::Date;
 use crate::errors::project::ErrorProject;
-use crate::{transaction::Transaction, errors::ErrorDomain};
 use crate::repositories::project_transaction_repository::ProjectTransactionRepository;
 pub struct TransactionCreateCurrentProject<'a> {
     project_id: &'a String,
@@ -21,11 +18,8 @@ impl TransactionCreateCurrentProject<'_> {
             date_start
         }
     }
-}
 
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository> > for TransactionCreateCurrentProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject>{
-        let repo = repo.borrow_mut();
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = Project::new(
             self.project_id,
             self.title,
@@ -56,11 +50,8 @@ impl TransactionCreateCompletProject<'_> {
             date_end
          }
     }
-}
 
-impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionCreateCompletProject<'_> {
-    fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
-        let repo = repo.borrow_mut();
+    pub fn execute(&self, repo: &mut impl ProjectTransactionRepository) -> Result<(), ErrorProject> {
         let project = Project::new(
             self.project_id,
             self.title,
@@ -71,5 +62,5 @@ impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for T
         repo.create_project(project);
 
         Ok(())
-    }
+    } 
 }

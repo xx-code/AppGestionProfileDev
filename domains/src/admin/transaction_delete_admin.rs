@@ -1,6 +1,4 @@
-use std::borrow::BorrowMut;
-
-use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin}};
+use crate::errors::admin::ErrorAdmin;
 use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 
 pub struct TransactionDeleteAdmin<'a> {
@@ -13,12 +11,8 @@ impl TransactionDeleteAdmin<'_>{
             admin_id 
         }
     } 
-}
 
-impl Transaction<(), ErrorAdmin, Box<dyn AdminTransactionRepository>> for TransactionDeleteAdmin<'_> {
-    fn execute(&mut self, repo: Box<dyn AdminTransactionRepository> ) -> Result<(), ErrorAdmin>{
-        let repo = repo.borrow_mut();
-        
+    pub fn execute(&self, repo: &mut impl AdminTransactionRepository) -> Result<(), ErrorAdmin> {
         let admin = repo.get_admin(self.admin_id);
 
         if !admin.is_none() {

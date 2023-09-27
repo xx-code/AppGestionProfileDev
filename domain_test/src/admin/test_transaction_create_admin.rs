@@ -1,10 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use std::cell::RefCell;
-
     use domains::{
         repositories::admin_transaction_repository::AdminTransactionRepository,
-        transaction::Transaction,
         admin::transaction_create_admin::TransactionCreateAdmin
     };
     use persistence::{
@@ -19,15 +16,15 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let mut admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut new_admin = TransactionCreateAdmin::new(
+        let new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,
             &password
         );
 
-        let _ = new_admin.execute(admin_data);
+        let _ = new_admin.execute(&mut admin_data);
         drop(new_admin);
         
         let admin_data = AdminTransactionPersistence::build(&mut db);
@@ -44,29 +41,29 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut new_admin = TransactionCreateAdmin::new(
+        let new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,
             &password
         );
 
-        let _ = new_admin.execute(admin_data);
+        let _ = new_admin.execute(&mut admin_data);
         drop(new_admin);
 
         let admin_id = String::from("admin1");
         let username = String::from("new_user");
         let password = String::from("password valid");
 
-        let admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
-        let mut new_admin = TransactionCreateAdmin::new(
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
+        let new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,
             &password
         );
         
-        let val = new_admin.execute(admin_data).is_ok();
+        let val = new_admin.execute(&mut admin_data).is_ok();
         assert_eq!(val, false);
     }
 }

@@ -3,7 +3,6 @@ mod tests {
     use domains::{
         admin::transaction_create_admin::TransactionCreateAdmin,
         admin::transaction_get_admin::TransactionGetAdmin,
-        transaction::Transaction
     };
     use persistence::{
         data_persistence::DataPersistence,
@@ -16,24 +15,24 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut new_admin = TransactionCreateAdmin::new(
+        let new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,
             &password
         );
 
-        let _ = new_admin.execute(admin_data);
+        let _ = new_admin.execute(&mut admin_data);
         drop(new_admin);
         
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionGetAdmin::new(
+        let ts = TransactionGetAdmin::new(
             &admin_id
         );
 
-        let res = ts.execute(admin_data);
+        let res = ts.execute(&mut admin_data);
         let admin = res.ok().unwrap();
 
         assert_eq!(admin.get_username(), &username);
@@ -44,13 +43,13 @@ mod tests {
         let admin_id = String::from("admin1");
 
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = AdminTransactionPersistence::build(&mut db);
         
-        let mut ts = TransactionGetAdmin::new(
+        let ts = TransactionGetAdmin::new(
             &admin_id
         );
 
-        let res = ts.execute(admin_data);
+        let res = ts.execute(&mut admin_data);
         
         assert_eq!(res.is_ok(), false);
     }

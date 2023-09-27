@@ -1,7 +1,5 @@
-use std::borrow::BorrowMut;
-
 use entities::profile::Profile;
-use crate::{transaction::Transaction, errors::{ErrorDomain, admin::ErrorAdmin, profile::ErrorProfile}};
+use crate::errors::admin::ErrorAdmin;
 use crate::repositories::profile_transaction_repository::ProfileTransactionRepository;
 pub struct TransactionCreateProfile<'a> {
     admin_id: &'a String,
@@ -23,13 +21,8 @@ impl TransactionCreateProfile<'_> {
             phone_number, 
         }
     }
-}
 
-impl Transaction<(), ErrorAdmin, Box<dyn ProfileTransactionRepository>> for TransactionCreateProfile<'_> {
-    fn execute(&mut self, repo: Box<dyn ProfileTransactionRepository> ) -> Result<(), ErrorAdmin> {
-        
-        let repo = repo.borrow_mut();
-
+    pub fn execute(&self, repo: &mut impl ProfileTransactionRepository) -> Result<(), ErrorAdmin> {
         if repo.is_admin_exist(self.admin_id) {
             let profile = Profile::new(
                 self.admin_id,

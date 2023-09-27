@@ -1,10 +1,5 @@
-use std::borrow::BorrowMut;
-
 use crate::repositories::skill_transaction_repository::SkillTransactionRepository;
-use crate::{
-    transaction::Transaction, 
-    errors::{ErrorDomain, skill::ErrorSkill}
-};
+use crate::errors::skill::ErrorSkill;
 
 
 pub struct TransactionDeleteSkill<'a> {
@@ -17,10 +12,8 @@ impl TransactionDeleteSkill<'_> {
             skill_id
         }
     }
-}
-impl Transaction<(), ErrorSkill, Box<dyn SkillTransactionRepository>> for TransactionDeleteSkill<'_> {
-    fn execute(&mut self, repo: Box<dyn SkillTransactionRepository>) -> Result<(), ErrorSkill> {
-        let repo = repo.borrow_mut();
+
+    pub fn execute(&mut self, repo: &mut impl SkillTransactionRepository) -> Result<(), ErrorSkill> {
         let skill = repo.get_skill(self.skill_id);
 
         if !skill.is_none() {

@@ -5,7 +5,6 @@ mod test {
        project_transaction_persistence::ProjectTransactionPersistence,
     };
     use domains::{
-        transaction::Transaction,
         repositories::project_transaction_repository::ProjectTransactionRepository,
         project::{
            transaction_create_project::TransactionCreateCompletProject,
@@ -28,16 +27,16 @@ mod test {
         let date_start = Date::from_calendar_date(2021, time::Month::January, 3).unwrap();
         let date_end = Date::from_calendar_date(2022, time::Month::January, 4).unwrap();
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(db));
+        let mut project_data = ProjectTransactionPersistence::build(db);
 
-        let mut transaction = TransactionCreateCompletProject::new(
+        let transaction = TransactionCreateCompletProject::new(
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = transaction.execute(project_data);
+        let _ = transaction.execute(&mut project_data);
         drop(transaction);
     }
     #[test]
@@ -48,16 +47,16 @@ mod test {
         let project_id = String::from("project1");
         let title = String::from("title project");
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectTitle::new(
+        let ts = TransactionUpdateProjectTitle::new(
             &project_id,
             &title
         );
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
 
         assert_eq!(project.get_title(), &title);
@@ -71,16 +70,16 @@ mod test {
         let project_id = String::from("project1");
         let descripiton = String::from("new _description");
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectDescription::new(
+        let ts = TransactionUpdateProjectDescription::new(
             &project_id,
             &descripiton
         );
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
 
         assert_eq!(project.get_description(), &descripiton);
@@ -94,16 +93,16 @@ mod test {
         let project_id = String::from("project1");
         let date_start = Date::from_calendar_date(2021, time::Month::April, 3).unwrap();
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectDateStart::new(
+        let ts = TransactionUpdateProjectDateStart::new(
             &project_id,
             &date_start
         );
-        let _ =  ts.execute(project_data);
+        let _ =  ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
 
         assert_eq!(project.get_date_start(), &date_start);
@@ -117,16 +116,16 @@ mod test {
         let project_id = String::from("project1");
         let date_end = Date::from_calendar_date(2022, time::Month::February, 3).unwrap();
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectDateEnd::new(
+        let ts = TransactionUpdateProjectDateEnd::new(
             &project_id,
             &date_end
         );
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
 
         assert_eq!(project.get_date_end().unwrap(), date_end);
@@ -139,13 +138,13 @@ mod test {
         let project_id = String::from("project1");
         let new_date_start = Date::from_calendar_date(2023, time::Month::January, 3).unwrap();
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectDateStart::new(
+        let ts = TransactionUpdateProjectDateStart::new(
             &project_id,
             &new_date_start
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);
@@ -158,13 +157,13 @@ mod test {
         let project_id = String::from("project1");
         let new_date_end = Date::from_calendar_date(2019, time::Month::January, 3).unwrap();
         
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionUpdateProjectDateEnd::new(
+        let ts = TransactionUpdateProjectDateEnd::new(
             &project_id,
             &new_date_end
         );
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         drop(ts);
         
         assert_eq!(res.is_ok(), false);
@@ -180,19 +179,19 @@ mod test {
         let link_title = String::from("Title link");
         let link_address = String::from("linknks@gmail.com");
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddLinkProject::new(
+        let ts = TransactionAddLinkProject::new(
             &project_id,
             &link_id,
             &link_title,
             &link_address
         );
 
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
         let link = project.get_link(&link_id).unwrap();
         let links = project.get_links();
@@ -212,29 +211,29 @@ mod test {
         let link_title = String::from("Title link");
         let link_address = String::from("linknks@gmail.com");
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionAddLinkProject::new(
+        let ts = TransactionAddLinkProject::new(
             &project_id,
             &link_id,
             &link_title,
             &link_address
         );
 
-        let _ = ts.execute(project_data);
+        let _ = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionDeleteLinkProject::new(
+        let ts = TransactionDeleteLinkProject::new(
             &project_id,
             &link_id
         );
 
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         drop(ts);
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let project_data = ProjectTransactionPersistence::build(&mut db);
         let project = project_data.get_project(&project_id).unwrap();
         let links = project.get_links();
 
@@ -250,14 +249,14 @@ mod test {
 
         let link_id = String::from("LINK1");
 
-        let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
+        let mut project_data = ProjectTransactionPersistence::build(&mut db);
 
-        let mut ts = TransactionDeleteLinkProject::new(
+        let ts = TransactionDeleteLinkProject::new(
             &project_id,
             &link_id
         );
 
-        let res = ts.execute(project_data);
+        let res = ts.execute(&mut project_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);
