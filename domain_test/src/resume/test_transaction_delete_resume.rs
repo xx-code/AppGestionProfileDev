@@ -29,7 +29,6 @@ mod tests {
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddResumeComplet::new(
-            resume_data,
             &resume_id,
             &title, 
             &description, 
@@ -37,16 +36,15 @@ mod tests {
             &date_start,
             &date_end
         );
-        let _ = ts.execute();
+        let _ = ts.execute(resume_data);
         drop(ts);
 
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteResume::new(
-            resume_data,
             &resume_id,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(resume_data);
         drop(ts);
 
         let resume_data = ResumeTransactionPersistence::build(&mut db);
@@ -62,10 +60,9 @@ mod tests {
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteResume::new(
-            resume_data,
             &resume_id,
         );
-        let res = ts.execute();
+        let res = ts.execute(resume_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

@@ -30,23 +30,21 @@ mod tests {
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddResumeCurrent::new(
-            resume_data,
             &resume_id,
             &title, 
             &description, 
             &type_resume, 
             &date_start
         );
-        let _ = ts.execute();
+        let _ = ts.execute(resume_data);
         drop(ts);
 
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetResume::new(
-            resume_data,
             &resume_id,
         );
-        let res = ts.execute();
+        let res = ts.execute(resume_data);
         let resume = res.ok().unwrap();
 
         assert_eq!(&title, resume.get_title());
@@ -62,10 +60,9 @@ mod tests {
         let resume_id = String::from("resume1");
 
         let mut ts = TransactionGetResume::new(
-            resume_data,
             &resume_id,
         );
-        let res = ts.execute();
+        let res = ts.execute(resume_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -82,21 +79,19 @@ mod tests {
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddResumeCurrent::new(
-            resume_data,
             &resume_id,
             &title, 
             &description, 
             &type_resume, 
             &date_start
         );
-        let _ = ts.execute();
+        let _ = ts.execute(resume_data);
         drop(ts);
 
         let resume_data = Box::new(ResumeTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetAllResume::new(
-            resume_data,
         );
-        let res = ts.execute();
+        let res = ts.execute(resume_data);
         let resumes = res.ok().unwrap();
 
         assert_eq!(resumes.len(), 1);

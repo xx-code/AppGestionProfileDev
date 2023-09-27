@@ -31,14 +31,13 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(db));
 
         let mut transaction = TransactionCreateCompletProject::new(
-            project_data,
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = transaction.execute();
+        let _ = transaction.execute(project_data);
         drop(transaction);
     }
     #[test]
@@ -52,11 +51,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectTitle::new(
-            project_data,
             &project_id,
             &title
         );
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -76,11 +74,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectDescription::new(
-            project_data,
             &project_id,
             &descripiton
         );
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -100,11 +97,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectDateStart::new(
-            project_data,
             &project_id,
             &date_start
         );
-        let _ =  ts.execute();
+        let _ =  ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -124,11 +120,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectDateEnd::new(
-            project_data,
             &project_id,
             &date_end
         );
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -147,11 +142,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectDateStart::new(
-            project_data,
             &project_id,
             &new_date_start
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);
@@ -167,11 +161,10 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionUpdateProjectDateEnd::new(
-            project_data,
             &project_id,
             &new_date_end
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         drop(ts);
         
         assert_eq!(res.is_ok(), false);
@@ -190,14 +183,13 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddLinkProject::new(
-            project_data,
             &project_id,
             &link_id,
             &link_title,
             &link_address
         );
 
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -223,25 +215,23 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddLinkProject::new(
-            project_data,
             &project_id,
             &link_id,
             &link_title,
             &link_address
         );
 
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteLinkProject::new(
-            project_data,
             &project_id,
             &link_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         drop(ts);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -263,12 +253,11 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteLinkProject::new(
-            project_data,
             &project_id,
             &link_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

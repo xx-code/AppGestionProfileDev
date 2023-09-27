@@ -18,8 +18,8 @@ mod test {
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let profile_id = String::from("profile1");
-        let mut ts = TransactionDeleteProfile::new(profile_data, &profile_id);
-        let _ = ts.execute();
+        let mut ts = TransactionDeleteProfile::new(&profile_id);
+        let _ = ts.execute(profile_data);
 
         drop(ts);
 
@@ -34,8 +34,8 @@ mod test {
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let profile_id = String::from("profile1");
-        let mut ts = TransactionDeleteProfile::new(profile_data, &profile_id);
-        let res = ts.execute();
+        let mut ts = TransactionDeleteProfile::new(&profile_id);
+        let res = ts.execute(profile_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false)

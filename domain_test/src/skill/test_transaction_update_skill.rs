@@ -27,13 +27,12 @@
 
         let skill_data = Box::new(SkillTransactionPersistence::build(db));
         let mut ts = TransactionAddSkill::new(
-            skill_data,
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
     }
 
     #[test]
@@ -48,11 +47,10 @@
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionUpdateTitleSkill::new(
-            skill_data,
             &skill_id, 
             &new_title,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -72,11 +70,10 @@
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionUpdateLogoSkill::new(
-            skill_data,
             &skill_id, 
             &new_logo,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -97,11 +94,10 @@
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionUpdateIsCurrentSkill::new(
-            skill_data,
             &skill_id, 
             is_current,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);

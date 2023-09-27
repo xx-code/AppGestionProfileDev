@@ -27,14 +27,13 @@ mod tests {
         let project_data = Box::new(ProjectTransactionPersistence::build(db));
 
         let mut transaction = TransactionCreateCompletProject::new(
-            project_data,
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = transaction.execute();
+        let _ = transaction.execute(project_data);
         drop(transaction);
     }
     #[test]
@@ -49,22 +48,20 @@ mod tests {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionCreateCompletProject::new(
-            project_data,
             &project_id,
             &title,
             &description,
             &date_start,
             &date_end
         );
-        let _ = ts.execute();
+        let _ = ts.execute(project_data);
         drop(ts);
         
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProject::new(
-            project_data,
             &project_id
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let project = res.ok().unwrap();
 
         assert_eq!(project.get_title(), &title);
@@ -79,10 +76,9 @@ mod tests {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProject::new(
-            project_data,
             &project_id
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -99,9 +95,9 @@ mod tests {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetAllProject::new(
-            project_data
+
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 3);
@@ -120,11 +116,10 @@ mod tests {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProjectByPage::new(
-            project_data,
             page,
             content_size
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 5);
@@ -136,11 +131,10 @@ mod tests {
         let page = 2;
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProjectByPage::new(
-            project_data,
             page,
             content_size
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let projects = res.ok().unwrap();
 
         let project = &projects[0];
@@ -151,11 +145,10 @@ mod tests {
         let content_size = 7;
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProjectByPage::new(
-            project_data,
             page,
             content_size
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let projects = res.ok().unwrap();
 
         assert_eq!(projects.len(), 3);
@@ -169,11 +162,10 @@ mod tests {
         
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProjectByPage::new(
-            project_data,
             page,
             content_size
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         let projects = res.ok().unwrap();
 
         let project = &projects[0];
@@ -190,11 +182,10 @@ mod tests {
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut ts = TransactionGetProjectByPage::new(
-            project_data,
             page,
             content_size
         );
-        let res = ts.execute();
+        let res = ts.execute(project_data);
         assert_eq!(res.is_ok(), false);
     }
 }

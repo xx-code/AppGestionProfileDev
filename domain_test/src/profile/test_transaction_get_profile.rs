@@ -19,12 +19,11 @@ mod tests {
         let admin_data = AdminTransactionPersistence::build(db);
         
         let mut ts = TransactionCreateAdmin::new(
-            Box::new(admin_data),
             &admin_id,
             &username,
             &password,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(admin_data);
     }
 
     pub fn setup_profile(db: &mut DataPersistence) {
@@ -37,7 +36,6 @@ mod tests {
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(db));
         let mut ts = TransactionCreateProfile::new(
-            profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -45,7 +43,7 @@ mod tests {
             &email_address,
             &phone_number,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
     }
     #[test]
     fn test_get_profile() {
@@ -58,10 +56,9 @@ mod tests {
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetProfile::new(
-            profile_data,
             &profile_id
         );
-        let res = ts.execute();
+        let res = ts.execute(profile_data);
         let profile = res.ok().unwrap();
 
         assert_eq!(profile.get_firstname(), &String::from("first"));
@@ -77,10 +74,9 @@ mod tests {
         let profile_data =  Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetProfile::new(
-            profile_data,
             &profile_id
         );
-        let res = ts.execute();
+        let res = ts.execute(profile_data);
 
         assert_eq!(res.is_ok(), false);
     }

@@ -27,22 +27,20 @@ mod tests {
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddSkill::new(
-            skill_data,
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetSkill::new(
-            skill_data,
             &skill_id
         );
-        let res = ts.execute();
+        let res = ts.execute(skill_data);
         let skill = res.ok().unwrap();
 
         assert_eq!(skill.get_title(), &title);
@@ -57,10 +55,9 @@ mod tests {
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionGetSkill::new(
-            skill_data,
             &skill_id
         );
-        let res = ts.execute();
+        let res = ts.execute(skill_data);
 
         assert_eq!(res.is_ok(), false);
     }
@@ -76,20 +73,18 @@ mod tests {
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddSkill::new(
-            skill_data,
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut res = TransactionGetAllSkill::new(
-            skill_data,
         );
-        let res = res.execute();
+        let res = res.execute(skill_data);
         let resumes = res.ok().unwrap();
 
         assert_eq!(resumes.len(), 1);

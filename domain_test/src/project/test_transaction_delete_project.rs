@@ -24,21 +24,19 @@ mod test {
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
 
         let mut transaction = TransactionCreateCurrentProject::new(
-            project_data,
             &project_id,
             &title,
             &description,
             &date_start
         );
-        let _ =transaction.execute();
+        let _ =transaction.execute(project_data);
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut transaction = TransactionDeleteProject::new(
-            project_data,
             &project_id,
         );
-        let _ = transaction.execute();
+        let _ = transaction.execute(project_data);
         drop(transaction);
 
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
@@ -54,10 +52,9 @@ mod test {
         let mut db = DataPersistence::new();
         let project_data = Box::new(ProjectTransactionPersistence::build(&mut db));
         let mut transaction = TransactionDeleteProject::new(
-            project_data,
             &project_id,
         );
-        let res = transaction.execute();
+        let res = transaction.execute(project_data);
         drop(transaction);
 
         assert_eq!(res.is_ok(), false);

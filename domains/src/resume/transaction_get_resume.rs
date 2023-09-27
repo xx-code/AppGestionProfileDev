@@ -29,16 +29,16 @@ impl Transaction<Resume, ErrorResume, Box<dyn ResumeTransactionRepository>> for 
     }
 }
 
-pub struct TransactionGetAllResume<'a> {
+pub struct TransactionGetAllResume {
 }
 
-impl TransactionGetAllResume<'_> {
-    pub fn new<'a>() -> TransactionGetAllResume<'a> {
+impl TransactionGetAllResume {
+    pub fn new() -> TransactionGetAllResume {
         TransactionGetAllResume { }     
     }
 }
 
-impl Transaction<Vec<Resume>, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetAllResume<'_> {
+impl Transaction<Vec<Resume>, ErrorResume, Box<dyn ResumeTransactionRepository>> for TransactionGetAllResume {
     fn execute(&mut self, repo: Box<dyn ResumeTransactionRepository>) -> Result<Vec<Resume>, ErrorResume> {
         let resumes = repo.get_resumes();
         return Ok(resumes)

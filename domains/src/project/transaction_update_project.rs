@@ -151,13 +151,13 @@ impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for T
     fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
         let repo = repo.borrow_mut();
         let link = Link::new(self.link_id, self.title, self.address);
-        let project = self.db.get_project(self.project_id);
+        let project = repo.get_project(self.project_id);
 
         if project.is_none() {
             return Err(ErrorProject::ProjectNotExist)
         }
 
-        self.db.create_link_project(self.project_id, link);
+        repo.create_link_project(self.project_id, link);
         Ok(())
     }
 }
@@ -177,7 +177,7 @@ impl TransactionDeleteLinkProject<'_> {
 impl Transaction<(), ErrorProject, Box<dyn ProjectTransactionRepository>>  for TransactionDeleteLinkProject<'_> {
     fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<(), ErrorProject> {
         let repo = repo.borrow_mut();
-        let project = self.db.get_project(self.project_id);
+        let project = repo.get_project(self.project_id);
 
         if project.is_none() {
             return Err(ErrorProject::ProjectNotExist)

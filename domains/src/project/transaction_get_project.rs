@@ -25,16 +25,16 @@ impl Transaction<Project, ErrorProject, Box<dyn ProjectTransactionRepository>> f
     }
 }
 
-pub struct TransactionGetAllProject<'a> {
+pub struct TransactionGetAllProject {
 }
 
-impl TransactionGetAllProject<'_> {
-    pub fn new<'a>() -> TransactionGetAllProject<'a> {
+impl TransactionGetAllProject {
+    pub fn new() -> TransactionGetAllProject {
         TransactionGetAllProject { }
     }
 }
 
-impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetAllProject<'_> {
+impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetAllProject {
     fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
         let projects = repo.get_projects();
 
@@ -42,13 +42,13 @@ impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepositor
     }
 }
 
-pub struct TransactionGetProjectByPage<'a> {
+pub struct TransactionGetProjectByPage {
     page: usize,
     content_size: usize
 }
 
-impl TransactionGetProjectByPage<'_> {
-    pub fn new<'a>(page: usize, content_size: usize) -> TransactionGetProjectByPage<'a> {
+impl TransactionGetProjectByPage {
+    pub fn new(page: usize, content_size: usize) -> TransactionGetProjectByPage {
         TransactionGetProjectByPage { 
             page, 
             content_size
@@ -56,7 +56,7 @@ impl TransactionGetProjectByPage<'_> {
     }
 }
 
-impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProjectByPage<'_> {
+impl Transaction<Vec<Project>, ErrorProject, Box<dyn ProjectTransactionRepository>> for TransactionGetProjectByPage {
     fn execute(&mut self, repo: Box<dyn ProjectTransactionRepository>) -> Result<Vec<Project>, ErrorProject> {
         
         if self.page > repo.get_pages_number(self.content_size) {

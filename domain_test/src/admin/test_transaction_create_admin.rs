@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod tests {
+    use std::cell::RefCell;
+
     use domains::{
         repositories::admin_transaction_repository::AdminTransactionRepository,
         transaction::Transaction,
@@ -17,7 +19,7 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let mut admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let mut admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
 
         let mut new_admin = TransactionCreateAdmin::new(
             &admin_id, 
@@ -42,7 +44,7 @@ mod tests {
         let password = String::from("password");
 
         let mut db = DataPersistence::new();
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
 
         let mut new_admin = TransactionCreateAdmin::new(
             &admin_id, 
@@ -57,7 +59,7 @@ mod tests {
         let username = String::from("new_user");
         let password = String::from("password valid");
 
-        let admin_data = Box::new(AdminTransactionPersistence::build(&mut db));
+        let admin_data = RefCell::new(Box::new(AdminTransactionPersistence::build(&mut db)));
         let mut new_admin = TransactionCreateAdmin::new(
             &admin_id, 
             &username,

@@ -25,15 +25,14 @@ pub mod test {
         let username = String::from("usern");
         let password = String::from("password");
 
-        let admin_data = AdminTransactionPersistence::build(db);
+        let admin_data = Box::new(AdminTransactionPersistence::build(db));
         
         let mut ts = TransactionCreateAdmin::new(
-            Box::new(admin_data),
             &admin_id,
             &username,
             &password,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(admin_data);
     }
 
     pub fn setup_profile(db: &mut DataPersistence) {
@@ -46,7 +45,6 @@ pub mod test {
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(db));
         let mut ts = TransactionCreateProfile::new(
-            profile_data,
             &admin_id,
             &profile_id,
             &firstname,
@@ -54,7 +52,7 @@ pub mod test {
             &email_address,
             &phone_number,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
     }
     #[test]
     fn test_update_firstname_profile() {
@@ -67,11 +65,10 @@ pub mod test {
         let profile_id = String::from("profile1");
         let new_firstname = String::from("new_firstname");
         let mut ts = TransactionUpdateFirstnameProfile::new(
-            profile_data,
             &profile_id, 
             &new_firstname
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -91,11 +88,10 @@ pub mod test {
         let profile_id = String::from("profile1");
         let new_lastname = String::from("new_lastname");
         let mut ts = TransactionUpdateLastnameProfile::new(
-            profile_data,
             &profile_id, 
             &new_lastname
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -115,11 +111,10 @@ pub mod test {
         let profile_id = String::from("profile1");
         let new_email = String::from("New email");
         let mut ts = TransactionUpdateEmailAddressProfile::new(
-            profile_data, 
             &profile_id, 
             &new_email
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -140,11 +135,10 @@ pub mod test {
         let profile_id = String::from("profile1");
         let new_phone: String = String::from("482982569");
         let mut ts = TransactionUpdatePhoneNumberProfile::new(
-            profile_data, 
             &profile_id, 
             &new_phone
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
        
         let profile_data = ProfileTransactionPersistence::build(&mut db);
@@ -166,13 +160,12 @@ pub mod test {
 
         let profile_id = String::from("profile1");
         let mut ts = TransactionAddLinkProfile::new(
-            profile_data,
             &profile_id,
             &link_id,
             &link_title,
             &link_address
         );
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
@@ -199,25 +192,23 @@ pub mod test {
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionAddLinkProfile::new(
-            profile_data,
             &profile_id,
             &link_id,
             &link_title,
             &link_address
         );
 
-        let _ = ts.execute();
+        let _ = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteLinkProfile::new(
-            profile_data,
             &profile_id,
             &link_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(profile_data);
         drop(ts);
 
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
@@ -237,12 +228,11 @@ pub mod test {
         let profile_data = Box::new(ProfileTransactionPersistence::build(&mut db));
 
         let mut ts = TransactionDeleteLinkProfile::new(
-            profile_data,
             &profile_id,
             &link_id
         );
 
-        let res = ts.execute();
+        let res = ts.execute(profile_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

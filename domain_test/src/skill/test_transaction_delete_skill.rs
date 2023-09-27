@@ -24,21 +24,19 @@ mod tests {
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionAddSkill::new(
-            skill_data,
             &skill_id,
             &title,
             is_current,
             &logo
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionDeleteSkill::new(
-            skill_data,
             &skill_id,
         );
-        let _ = ts.execute();
+        let _ = ts.execute(skill_data);
         drop(ts);
 
         let skill_data = SkillTransactionPersistence::build(&mut db);
@@ -52,10 +50,9 @@ mod tests {
         let mut db = DataPersistence::new();
         let skill_data = Box::new(SkillTransactionPersistence::build(&mut db));
         let mut ts = TransactionDeleteSkill::new(
-            skill_data,
             &skill_id,
         );
-        let res = ts.execute();
+        let res = ts.execute(skill_data);
         drop(ts);
 
         assert_eq!(res.is_ok(), false);

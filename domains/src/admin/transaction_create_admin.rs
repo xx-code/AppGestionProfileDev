@@ -1,3 +1,6 @@
+use std::borrow::BorrowMut;
+use std::cell::RefCell;
+
 use entities::admin::Admin;
 use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 use crate::errors::admin::ErrorAdmin;
@@ -18,16 +21,16 @@ impl TransactionCreateAdmin<'_> {
         }
     }
 }
-impl Transaction<(), ErrorAdmin, Box<dyn AdminTransactionRepository> > for TransactionCreateAdmin<'_> {
-    fn execute(&mut self, repo: Box<dyn AdminTransactionRepository> ) -> Result<(), ErrorAdmin> {
+impl Transaction<(), ErrorAdmin, RefCell<Box<dyn AdminTransactionRepository>>> for TransactionCreateAdmin<'_> {
+    fn execute(&mut self, repo: RefCell<Box<dyn AdminTransactionRepository>> ) -> Result<(), ErrorAdmin> {
         let new_admin = Admin::new(
             self.admin_id,
             self.username,
             self.password,
         );
 
-        if repo.is_already_exist(self.username) == false {
-            self.db.create_admin(new_admin);
+        if repo.borrow().is_already_exist(self.username) == false {
+            repo.borrow_mut().create_admin(new_admin);
             Ok(())
         } else {
             Err(ErrorAdmin::AdminAlreadyExist)
