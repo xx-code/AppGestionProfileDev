@@ -3,12 +3,12 @@ use crate::{entity::Entity, link::Link};
 use std::collections::HashMap;
 #[derive(Debug, Clone)]
 pub struct Project {
-    pub project_id: String,
-    pub title: String,
-    pub description: String,
-    pub date_start: Date,
-    pub date_end: Option<Date>,
-    pub links: HashMap<String, Link>
+    project_id: String,
+    title: String,
+    description: String,
+    date_start: Date,
+    date_end: Option<Date>,
+    links: HashMap<String, Link>
 }
 
 impl Entity for Project{

@@ -15,6 +15,14 @@ impl AdminTransactionRepository for AdminTransactionPersistence<'_> {
     fn create_admin(&mut self, admin: Admin) {
         self.db.admins.push(admin)
     }
+    fn get_admin_by_username(&self, username: &String) -> Option<&Admin> {
+        for admin in &self.db.admins {
+            if admin.get_username() == username {
+                return Some(admin)
+            }
+        }
+        None
+    }
     fn get_admin(&self, admin_id: &String) -> Option<&Admin> {
         let index = self.get_index(&self.db.admins, admin_id);
         

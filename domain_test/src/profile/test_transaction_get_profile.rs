@@ -8,7 +8,7 @@ mod tests {
     use domains::{
         admin::transaction_create_admin::TransactionCreateAdmin,
         profile::transaction_create_profile::TransactionCreateProfile,
-        profile::transaction_get_profile::TransactionGetProfile
+        profile::transaction_get_profile::{TransactionGetProfile, ProfileDto}
     };
     pub fn setup_admin(db: &mut DataPersistence) {
         let admin_id = String::from("admin_1");
@@ -53,6 +53,12 @@ mod tests {
         setup_profile(&mut db);
 
         let profile_data = ProfileTransactionPersistence::build(&mut db);
+        let profile_dto = ProfileDto {
+            firstname: String::from("first"),
+            lastname: String::from("last"),
+            email_address: String::from("address"),
+            phone_number: String::from("07056389")
+        };
 
         let ts = TransactionGetProfile::new(
             &profile_id
@@ -60,10 +66,7 @@ mod tests {
         let res = ts.execute(&profile_data);
         let profile = res.ok().unwrap();
 
-        assert_eq!(profile.get_firstname(), &String::from("first"));
-        assert_eq!(profile.get_lastname(), &String::from("last"));
-        assert_eq!(profile.get_email_address(), &String::from("address"));
-        assert_eq!(profile.get_phone_number(), &String::from("07056389"));
+        assert_eq!(profile_dto, profile);
     }
     #[test]
     fn test_get_profile_not_exist() {

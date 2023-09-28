@@ -2,9 +2,8 @@ use domains::{
     repositories::admin_transaction_repository::AdminTransactionRepository, 
     admin::transaction_create_admin::TransactionCreateAdmin, errors::admin::ErrorAdmin,
 };
-use json::object::Object;
 use uuid::Uuid;
-use password_hash::PasswordHash;
+
 
 pub struct AdminController;
 
@@ -69,6 +68,28 @@ impl AdminController {
     }
 
     pub fn login_admin(&self, request: &json::JsonValue, repo: &mut impl AdminTransactionRepository) -> Result<json::JsonValue, json::JsonValue>{
+
+        if request["username"].is_null() || request["password"].is_null() {
+            let err = json::object! {
+                success: false,
+                error: "bad admin creation request",
+                msg: r#"
+                    structure request is:
+                    {
+                        username: "username",
+                        password: "password"
+                    }
+                "#
+            };
+
+            return Err(err)
+        }
+
+        let username = request["username"].to_string();
+
+        let admin = repo.get_admin(&username).unwrap();
+
+
         Ok(json::object! { })
     }
 }

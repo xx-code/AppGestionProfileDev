@@ -70,9 +70,9 @@ impl TransactionUpdateProjectDateStart<'_> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
-            if !project.unwrap().date_end.is_none() {
-                if &project.unwrap().date_end.unwrap() > self.date_start {
-                    let mut project = project.unwrap().clone();
+            if !project.unwrap().get_date_end().is_none() {
+                if &project.unwrap().get_date_end().unwrap() > self.date_start {
+                    let mut project: entities::project::Project = project.unwrap().clone();
                     project.set_date_start(self.date_start);
                     repo.update_project(project);
                     Ok(())
@@ -106,7 +106,7 @@ impl TransactionUpdateProjectDateEnd<'_> {
         let project = repo.get_project(self.project_id);
         
         if !project.is_none() {
-            if self.date_end > &project.unwrap().date_start {
+            if self.date_end > &project.unwrap().get_date_start() {
                 let mut project = project.unwrap().clone();
                 project.set_date_end(Some(self.date_end));
                 repo.update_project(project);
