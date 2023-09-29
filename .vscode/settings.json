@@ -4,6 +4,8 @@
         ".\\Cargo.toml",
         ".\\persistence\\Cargo.toml",
         ".\\domains\\Cargo.toml",
-        ".\\domains\\Cargo.toml"
+        ".\\domains\\Cargo.toml",
+        ".\\interactors\\Cargo.toml",
+        ".\\interactors\\Cargo.toml"
     ]
 }
