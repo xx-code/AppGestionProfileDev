@@ -1,21 +1,22 @@
 use domains::{repositories::skill_transaction_repository::SkillTransactionRepository, errors::skill::ErrorSkill};
 
 pub struct RequestAddSkill<'a> {
-    title: &'a String,
-    is_current: bool,
-    logo: &'a String,
+    pub title: &'a String,
+    pub is_current: bool,
+    pub logo: &'a String,
 }
 
 pub struct RequestUpdateSkill<'a> {
-    title: Option<&'a String>,
-    is_current: Option<bool>,
-    logo: Option<&'a String>
+    pub skill_id: &'a String,
+    pub title: Option<&'a String>,
+    pub is_current: Option<bool>,
+    pub logo: Option<&'a String>
 }
 
 pub struct ResponseGetSkill {
-    title: String,
-    is_current: bool,
-    logo: String
+    pub title: String,
+    pub is_current: bool,
+    pub logo: String
 }
 
 pub type SkillID = String;

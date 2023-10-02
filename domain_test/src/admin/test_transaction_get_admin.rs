@@ -5,7 +5,6 @@ mod tests {
         admin::transaction_get_admin::{
             TransactionGetAdmin, 
             TransactionGetAdminByUsername,
-            AdminDto
         },
     };
     use persistence::{
@@ -39,8 +38,8 @@ mod tests {
         let res = ts.execute(&mut admin_data);
         let admin = res.ok().unwrap();
 
-        assert_eq!(admin.username, username);
-        assert_eq!(admin.password, password);
+        assert_eq!(admin.get_username(), &username);
+        assert_eq!(admin.get_password(), &password);
     }
     #[test]
     fn test_admin_not_exist() {
@@ -53,7 +52,7 @@ mod tests {
             &admin_id
         );
 
-        let res: Result<AdminDto, domains::errors::admin::ErrorAdmin> = ts.execute(&mut admin_data);
+        let res = ts.execute(&mut admin_data);
         
         assert_eq!(res.is_ok(), false);
     }
@@ -72,11 +71,6 @@ mod tests {
             &password
         );
 
-        let admin = AdminDto {
-            username: String::from("new_user"),
-            password: String::from("password")
-        };
-
         let _ = new_admin.execute(&mut admin_data);
         drop(new_admin);
 
@@ -84,8 +78,9 @@ mod tests {
             &username
         );
         let res = ts.execute(&admin_data);
+        let admin = res.ok().unwrap();
 
-        assert_eq!(res.is_ok(), true);
-        assert_eq!(res.ok().unwrap(), admin);
+        assert_eq!(admin.get_username(), &username);
+        assert_eq!(admin.get_password(), &password);
     }
 }

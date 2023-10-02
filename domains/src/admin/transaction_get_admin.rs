@@ -1,11 +1,6 @@
+use entities::admin::Admin;
 use crate::repositories::admin_transaction_repository::AdminTransactionRepository;
 use crate::errors::admin::ErrorAdmin;
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct AdminDto {
-    pub username: String,
-    pub password: String
-}
 
 pub struct TransactionGetAdmin<'a> {
     admin_id: &'a String,
@@ -18,7 +13,7 @@ impl TransactionGetAdmin<'_> {
         }
     }
 
-    pub fn execute(&self, repo: &impl AdminTransactionRepository) -> Result<AdminDto, ErrorAdmin> {
+    pub fn execute(&self, repo: &impl AdminTransactionRepository) -> Result<Admin, ErrorAdmin> {
         let admin = repo.get_admin(self.admin_id);
 
         if admin.is_none() {
@@ -27,10 +22,7 @@ impl TransactionGetAdmin<'_> {
 
         let response = admin.unwrap().clone();
 
-        return Ok(AdminDto {
-            username: response.get_username().clone(),
-            password: response.get_password().clone()
-        })
+        return Ok(response)
     }
 }
 
@@ -43,7 +35,7 @@ impl TransactionGetAdminByUsername<'_> {
         TransactionGetAdminByUsername { username }
     }
 
-    pub fn execute(&self, repo: &impl AdminTransactionRepository) -> Result<AdminDto, ErrorAdmin> {
+    pub fn execute(&self, repo: &impl AdminTransactionRepository) -> Result<Admin, ErrorAdmin> {
         let admin = repo.get_admin_by_username(self.username);
 
         if admin.is_none() {
@@ -52,9 +44,6 @@ impl TransactionGetAdminByUsername<'_> {
 
         let response = admin.unwrap().clone();
 
-        return Ok(AdminDto { 
-            username: response.get_username().clone(), 
-            password: response.get_password().clone() 
-        })
+        return Ok(response)
     }
 }

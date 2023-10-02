@@ -2,7 +2,8 @@ use crate::errors::ErrorDomain;
 
 pub enum ErrorResume {
     DateEndMustBeSuperiorDateStart,
-    ResumeNotExist
+    ResumeNotExist,
+    ResumeTypeDoesntMatch,
 }
 
 impl ErrorDomain for ErrorResume {}
