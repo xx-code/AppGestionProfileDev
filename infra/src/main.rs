@@ -1,24 +1,25 @@
 #[macro_use] extern crate rocket;
 
-use std::path::PathBuf;
+mod session;
+mod message;
+mod api;
+
+use rocket::response::content::RawHtml;
+use rocket_dyn_templates::Template;
+use persistence::data_persistence::DataPersistence;
 
 #[get("/")]
-fn index() -> &'static str {
-    "Hello, world! -- 566"
-}
-
-#[get("/hello/<name>")]
-fn hello(name: &str) -> String {
-    format!("Hello, {}!", name)
-}
-
-#[get("/page/<path..>")]
-fn get_page(path: PathBuf) {
-
+fn index() -> RawHtml<&'static str> {
+    RawHtml(r#"<a href="message">Set a Message</a> or <a href="session">Use Sessions</a>."#)
 }
 
 #[launch]
 fn rocket() -> _ {
+    let mut db = DataPersistence::new();
     rocket::build()
-    .mount("/", routes![index, hello])
+        .attach(Template::fairing())
+        .mount("/", routes![index])
+        .mount("/create_admin", api::create_admin::routes(&mut db))
+        .mount("/message", message::routes())
+        .mount("/session", session::routes())
 }
